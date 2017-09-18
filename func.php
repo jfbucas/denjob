@@ -224,6 +224,65 @@ function antispam_result( $p ) {
 }
 
 
+# Sending emails
+
+function mail_applicant($appname, $appemail, $jobtitle, $p, $h) {
+	global $EMAIL_HEADER, $APP_SUBJECT, $APP_MAIN;
+
+	$to = "$appemail";
+
+	$main = $APP_MAIN;
+	$main = str_replace( "%appname", $appname, $main );
+	$main = str_replace( "%appemail", $appemail, $main );
+	$main = str_replace( "%jobtitle", $jobtitle, $main );
+	$main = str_replace( "%p", $p, $main );
+	$main = str_replace( "%h", $h, $main );
+
+	mail ($to, $APP_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
+
+function mail_referee($refname, $refemail, $appname, $appemail, $jobtitle, $p, $h, $rh) {
+	global $EMAIL_HEADER, $REF_SUBJECT, $REF_MAIN;
+
+	$to = "$refemail";
+
+	$main = $REF_MAIN;
+	$main = str_replace( "%refname", $refname, $main );
+	$main = str_replace( "%refemail", $refemail, $main );
+	$main = str_replace( "%appname", $appname, $main );
+	$main = str_replace( "%appemail", $appemail, $main );
+	$main = str_replace( "%jobtitle", $jobtitle, $main );
+	$main = str_replace( "%p", $p, $main );
+	$main = str_replace( "%h", $h, $main );
+	$main = str_replace( "%rh", $rh, $main );
+
+	mail ($to, $REF_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
 
 
+function mail_assessor($assname, $assemail, $jobtitle, $p, $a) {
+	global $EMAIL_HEADER, $ASS_SUBJECT, $ASS_MAIN;
+
+	$to = "$assemail";
+
+	$main = $ASS_MAIN;
+	$main = str_replace( "%assname", $assname, $main );
+	$main = str_replace( "%assemail", $assemail, $main );
+	$main = str_replace( "%jobtitle", $jobtitle, $main );
+	$main = str_replace( "%p", $p, $main );
+	$main = str_replace( "%a", $a, $main );
+
+	mail ($to, $ASS_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
+
+function mail_chairman($chairemail) {
+	global $EMAIL_HEADER, $CHAIR_SUBJECT, $CHAIR_MAIN;
+
+	$to = "$chairemail";
+
+	$main = $CHAIR_MAIN;
+	$main = str_replace( "%c", do_hash($chairemail), $main );
+
+	mail ($to, $CHAIR_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
 ?>

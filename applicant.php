@@ -95,7 +95,6 @@ function get_page($p, $h, $msg = "", $error = "") {
 
 
 function sendrefmail( $p, $h, $rh ) {
-
 	$appname  = get_appname($p, $h);
 	$appemail = get_appemail($p, $h);
 	$refname  = get_refname($p, $h, $rh);
@@ -103,17 +102,7 @@ function sendrefmail( $p, $h, $rh ) {
 	$jobtitle = get_jobtitle($p);
 
 	# email unique link to fill details
-	$to = "$refemail";
-	$subject = "DIAS School of Theoretical Physics applicant cover letter request";
-	$main  = "Dear $refname,\n\n";
-	$main .= "$appname ($appemail) is applying to the position $jobtitle (see: https://jobs.stp.dias.ie). He/She has nominated you as referee.\n\n";
-	$main .= "Please upload a PDF cover letter using the following link:\n\n";
-	$main .= "https://www.stp.dias.ie/jobs/referee.php?p=$p&h=$h&rh=$rh\n\n";
-	$main .= "All the best,\n";
-	$main .= "STP School Administrator\n";
-	$header = "From: STP School administrator <schooladministrator@stp.dias.ie>\n";
-
-	mail ($to, $subject, $main, $header ) ;
+	mail_referee($refname, $refemail, $appname, $appemail, $jobtitle, $p, $h, $rh);
 }
 
 

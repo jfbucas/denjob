@@ -87,32 +87,13 @@ function sendassmail( $p, $a ) {
 	$jobtitle = get_jobtitle($p);
 
 	# email unique link to fill details
-	$to = "$assemail";
-	$subject = "DIAS School of Theoretical Physics assessor for open position request";
-	$main  = "Dear $assname,\n\n";
-	$main .= "you were nominated to be an assessor.\n\n";
-	$main .= "Please review the applicants for $jobtitle here:\n\n";
-	$main .= "https://www.stp.dias.ie/jobs/assessor.php?p=$p&a=$a\n\n";
-	$main .= "All the best,\n";
-	$main .= "STP School Administrator\n";
-	$header = "From: STP School administrator <schooladministrator@stp.dias.ie>\n";
-
-	mail ($to, $subject, $main, $header ) ;
+	mail_assessor($assname, $assemail, $jobtitle, $p, $a);
 }
 
 function sendchairmail( $chairemail ) {
 
 	# email unique link to fill details
-	$to = "$chairemail";
-	$subject = "DIAS School of Theoretical Physics admin link";
-	$main  = "Dear Chairman,\n\n";
-	$main .= "Please manage the job offers here:\n\n";
-	$main .= "https://www.stp.dias.ie/jobs/chairman.php?c=". do_hash($chairemail) ."\n\n";
-	$main .= "All the best,\n";
-	$main .= "STP School Administrator\n";
-	$header = "From: STP School administrator <schooladministrator@stp.dias.ie>\n";
-
-	mail ($to, $subject, $main, $header ) ;
+	mail_chairman($chairemail);
 }
 
 if ( isset($argv) ){ 

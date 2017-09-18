@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 		fclose($fh);
 	}
 
-	# add name to position/$p/$app/name
+	# store name/email
 	if (!is_dir(file_appdir($p, $h))) mkdir( file_appdir($p, $h) );
 	$fh = fopen( file_appname($p, $h), 'w+') or die("can't open file");
 	fwrite($fh, $appname);
@@ -37,19 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	fwrite($fh, $appemail);
 	fclose($fh);
 
-	# email unique link to fill details
-	$to = "$appemail";
-	$subject = "DIAS School of Theoretical Physics application link";
-	$main  = "Dear applicant,\n\n";
-	$main .= "thanks you for applying, please click on this link to continue with your application\n\n";
-	$main .= "https://www.stp.dias.ie/jobs/applicant.php?p=$p&h=$h\n";
-	$main .= "All the best,\n";
-	$main .= "STP School Administrator\n";
-	$header = "From: STP School administrator <schooladministrator@stp.dias.ie>\n";
-
-	mail ($to, $subject, $main, $header ) ;
-
 	$jobtitle = get_jobtitle($p);
+
+	# email unique link to fill details
+	mail_applicant($appname, $appemail, $jobtitle, $p, $h);
+
 	$msg="<font color=green>Thank you $appname for applying to $jobtitle, please check your email ($appemail) for a link to continue with your application.</font>";
 }
 

@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 }
 
 echo "<img src=sitelogo.png>\n";
-echo "<h1> School of Theoretical Physics </h1>\n";
+echo "<h1> $EMAIL_SUBJECT </h1>\n";
 echo "<h2> Positions currently open: </h2>\n";
 
 if ( $msg != "" ) {

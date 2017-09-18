@@ -27,38 +27,56 @@ $EMAIL_HEADER = "From: $FROM_EMAIL\n";
 
 # To Applicant
 $APP_SUBJECT = "$EMAIL_SUBJECT - application link";
-$APP_MAIN = "Dear %appname,\n\n".
-	"thanks you for applying to the position %jobtitle, please click on this link to continue with your application\n\n".
-	"$URL/applicant.php?p=%p&h=%h\n".
-	"All the best,\n".
-	"Administrator\n";
+$APP_MAIN = <<<EOM
+Dear %appname,
+
+thanks you for applying to the position %jobtitle, please click on this link to continue with your application
+$URL/applicant.php?p=%p&h=%h
+
+All the best,
+Administrator
+EOM;
 
 # To Referee
 $REF_SUBJECT = "$EMAIL_SUBJECT - Applicant cover letter request";
-$REF_MAIN = "Dear %refname,\n\n" .
-	"%appname (%appemail) is applying to the position %jobtitle (see: $URL). He/She has nominated you as referee.\n\n" .
-	"Please upload a PDF cover letter using the following link:\n\n" .
-	"$URL/referee.php?p=%p&h=%h&rh=%rh\n\n" .
-	"All the best,\n" .
-	"Administrator\n";
+$REF_MAIN = <<<EOM
+Dear %refname,
+
+%appname (%appemail) is applying to the position %jobtitle (see: $URL). He/She has nominated you as referee.
+
+Please upload a PDF cover letter using the following link:
+$URL/referee.php?p=%p&h=%h&rh=%rh
+
+All the best,
+Administrator
+EOM;
 
 
 # To Assessor
 $ASS_SUBJECTt = "$EMAIL_SUBJECT - assessor for open position request";
-$ASS_MAIN = "Dear %assname,\n\n" .
-	"you were nominated to be an assessor.\n\n".
-	"Please review the applicants for %jobtitle here:\n\n".
-	"$URL/assessor.php?p=%p&a=%a\n\n".
-	"All the best,\n".
-	"Administrator\n";
+$ASS_MAIN = <<<EOM
+Dear %assname,
+
+you were nominated to be an assessor.
+
+Please review the applicants for %jobtitle here:
+$URL/assessor.php?p=%p&a=%a
+
+All the best,
+Administrator
+EOM;
 
 
 # To Chairman/admin
 $CHAIR_SUBJECT = "$EMAIL_SUBJECT - admin link";
-$CHAIR_MAIN  = "Dear Chairman,\n\n".
-	"Please manage the job offers here:\n\n".
-	"$URL/chairman.php?c=%c".  ."\n\n".
-	"All the best,\n".
-	"Administrator\n";
+$CHAIR_MAIN  = <<<EOM
+Dear Chairman,
+
+Please manage the job offers here:
+$URL/chairman.php?c=%c
+
+All the best,
+Administrator
+EOM;
 
 ?>

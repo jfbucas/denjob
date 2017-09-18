@@ -162,6 +162,7 @@ if ( isset($argv) ){
 
 				# add name to position/$p/$app/$ref/name
 				$a=do_hash($assemail);
+				if (!is_dir(file_jobpanel($p))) mkdir(file_jobpanel($p) ) or die("can't make panel folder");
 				if (!is_dir(file_assdir($p, $a))) mkdir(file_assdir($p, $a) ) or die("can't make assessor folder");
 				$fh = fopen(file_assname($p, $a), 'w+') or die("can't open file");
 				fwrite($fh, $assname);

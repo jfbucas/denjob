@@ -67,7 +67,7 @@ foreach ($positions as $p) {
 		$jobtitle = get_jobtitle($p);
 		$jobdesc  = get_jobdesc($p);
 		echo "<h3>" . $jobtitle . "</h3>\n";
-		echo "<div style='width:500px;overflow:auto'><pre>" . $jobdesc . "</pre></div>\n";
+		echo "<div style='width:500px'><pre>" . $jobdesc . "</pre></div>\n";
 
 		echo "<br><br>\n";
 		echo "To Apply, please fill the following:\n <br>";

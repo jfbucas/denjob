@@ -6,10 +6,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$assname  = get_assname($p, $a);
 	$assemail = get_assemail( $p, $a); 
 
-	$jobtitle = get_jobtitle($p);
-	$jobdesc = get_jobdesc($p);
-
-	echo "<h2> Welcome $assname, you will be able to review the applicants for $jobtitle <h2>\n";
+	echo "<h2> Welcome $assname, you will be able to review the applicants <h2>\n";
 
 	if ($msg != "") {
 		echo "<h4> <font color=green>$msg</font> </h4>";
@@ -93,8 +90,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	echo "</form>";
 
 	echo "<hr>\n";
-	echo "<h3>" . $jobtitle . "</h3>\n";
-	echo "<pre>" . $jobdesc . "</pre>\n";
+	show_job_title_description($p);
 }
 
 

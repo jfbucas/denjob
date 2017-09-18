@@ -86,11 +86,8 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<input type='submit' value='Refresh page'>";
 	echo "</form>";
 
-	$jobtitle = get_jobtitle($p);
-	$jobdesc  = get_jobdesc($p);
 	echo "<hr>\n";
-	echo "<h3>" . $jobtitle . "</h3>\n";
-	echo "<pre>" . $jobdesc . "</pre>\n";
+	show_job_title_description($p);
 }
 
 

@@ -65,10 +65,8 @@ foreach ($positions as $p) {
 	$open = strpos($status, "open" );
 	if ( $open !== false ) {
 		$nb_job_open ++;
-		$jobtitle = get_jobtitle($p);
-		$jobdesc  = get_jobdesc($p);
-		echo "<h3>" . $jobtitle . "</h3>\n";
-		echo "<div style='width:500px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
+
+		show_job_title_description($p);
 
 		echo "<br><br>\n";
 		echo "To Apply, please fill the following:\n <br>";

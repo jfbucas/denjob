@@ -224,6 +224,14 @@ function antispam_result( $p ) {
 }
 
 
+# Show job title/description
+function show_job_title_description($p) {
+	$jobtitle = get_jobtitle($p);
+	$jobdesc  = get_jobdesc($p);
+	echo "<h3>" . $jobtitle . "</h3>\n";
+	echo "<div style='width:500px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
+}
+
 # Sending emails
 
 function mail_applicant($appname, $appemail, $jobtitle, $p, $h) {

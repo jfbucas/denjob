@@ -33,11 +33,8 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 		echo "<a href=".file_refpdf($p, $h, $rh)."> <img height=50px widht=50px src=pdf.png><br> Cover letter </a><br>";
 	}
 
-	$jobtitle = get_jobtitle($p);
-	$jobdesc  = get_jobdesc($p);
 	echo "<hr>\n";
-	echo "<h3>" . $jobtitle . "</h3>\n";
-	echo "<pre>" . $jobdesc . "</pre>\n";
+	show_job_title_description($p);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "GET") {

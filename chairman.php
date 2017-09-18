@@ -97,6 +97,9 @@ function sendchairmail( $chairemail ) {
 }
 
 if ( isset($argv) ){ 
+	if (!is_dir( file_positionsdir() ) ) {
+		mkdir( file_positionsdir() ) or die( "Cannot create positions folder ".file_positionsdir() );
+	}
 	if (!file_exists( file_chairmans() ) ) { 
 		echo "Creating chairman file ". file_chairmans() . "\n";
 		echo "Please add email address per line and restart the command\n";

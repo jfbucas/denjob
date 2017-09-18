@@ -67,14 +67,14 @@ foreach ($positions as $p) {
 		$jobtitle = get_jobtitle($p);
 		$jobdesc  = get_jobdesc($p);
 		echo "<h3>" . $jobtitle . "</h3>\n";
-		echo "<div style='width:500px'><pre>" . $jobdesc . "</pre></div>\n";
+		echo "<div style='width:500px'><p>" . $jobdesc . "</p></div>\n";
 
 		echo "<br><br>\n";
 		echo "To Apply, please fill the following:\n <br>";
 		echo "<form action='index.php' method='post' name='form".$p."'>\n";
 		echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
 		echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
-		echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' maxlength='50' value=''><br>\n";
+		echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' maxlength='5' value=''><br>\n";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='submit' value='Submit'>";
 		echo "</form>";

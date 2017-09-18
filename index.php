@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	}
 
 	# store name/email
+	if (!is_dir(file_jobdocuments($p))) mkdir( file_jobdocuments($p) );
 	if (!is_dir(file_appdir($p, $h))) mkdir( file_appdir($p, $h) );
 	$fh = fopen( file_appname($p, $h), 'w+') or die("can't open file");
 	fwrite($fh, $appname);

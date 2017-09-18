@@ -99,6 +99,7 @@ function sendchairmail( $chairemail ) {
 if ( isset($argv) ){ 
 	if (!is_dir( file_positionsdir() ) ) {
 		mkdir( file_positionsdir() ) or die( "Cannot create positions folder ".file_positionsdir() );
+		chown( file_positionsdir(), "www-data" );
 	}
 	if (!file_exists( file_chairmans() ) ) { 
 		echo "Creating chairman file ". file_chairmans() . "\n";

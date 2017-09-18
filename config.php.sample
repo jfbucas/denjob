@@ -1,0 +1,14 @@
+<?php
+
+$SOFTWARE = "Denjob";
+$VERSION = "v0.1";
+$DESCRIPTION = "Position application web interface.";
+$COPYRIGHT = "$SOFTWARE $VERSION ; $DESCRIPTION";
+
+# Salt for hash function
+$HASH_SALT = "#SomeString#";
+
+$CFG_POSITIONS_DIR = "positions";
+
+
+?>

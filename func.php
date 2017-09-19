@@ -53,7 +53,7 @@ function file_apppdf($p, $h){
 	return file_jobdocuments($p)."/$h/".do_hash($h."pdf").".pdf";
 }
 function file_appscore($p, $h, $a){ 
-	return file_jobdocuments($p)."/$h/$a";
+	return file_jobdocuments($p)."/$h/$a.score";
 }
 function file_referees($p, $h) {
 	return file_jobdocuments($p)."/$h/".do_hash("referees");

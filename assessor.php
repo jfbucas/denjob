@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			valid_p_h($p, $h) or die("Invalid Applicant");
 			if (!(( $v == "Y" ) || ( $v == "N" ) || ( $v == "M" )) ) die("Invalid score");
 
-			$fh = fopen(file_appscore($p, $h, $a), 'w+') or die("can't open file");
+			$fh = fopen(file_appscore($p, $h, $a), 'w+') or die("Can't open score file");
 			fwrite($fh, $v);
 			fclose($fh);
 

@@ -59,7 +59,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' style='background-color:darkgreen; text-color:white;' value='Yes'>";
+		echo "<input type='submit' style='background-color:darkgreen; color:white;' value=' Yes '>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -68,7 +68,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='M'>";
-		echo "<input type='submit' style='background-color:darkorange; text-color:white;' value='Maybe'>";
+		echo "<input type='submit' style='background-color:darkorange; color:white;' value='Maybe'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -77,7 +77,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='N'>";
-		echo "<input type='submit' style='background-color:darkred; text-color:white;' value='No'>";
+		echo "<input type='submit' style='background-color:darkred; color:white;' value=' No  '>";
 		echo "</form>";
 
 

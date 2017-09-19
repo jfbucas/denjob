@@ -93,7 +93,7 @@ function get_results_page($p) {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th align=center>Scores</th></tr>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th align=center>Scores</th><th>Total</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
@@ -101,9 +101,9 @@ function get_results_page($p) {
 		$appname = get_appname($p, $h);
 		echo "<tr style='border: 1px solid lightgray; padding:10px;'><td valign=middle style='padding:10px'>";
 		if (file_exists(file_apppdf($p, $h))) {
-			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=20px widht=20px src=pdf.png> </a></div>\n";
+			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail)  <img height=20px widht=20px src=pdf.png> </a></div>\n";
 		} else {
-			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
+			echo "<div> $appname ($appemail)</div>\n";
 		}
 		echo "</td><td align=center valign=middle style='padding:10px'>";
 

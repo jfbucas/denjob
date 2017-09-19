@@ -30,7 +30,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		$appname = get_appname($p, $h);
 		echo "<tr style='border: 1px solid gray; padding:10px;'><td>";
 		if (file_exists(file_apppdf($p, $h))) {
-			echo "<div><a href=". file_apppdf($p, $h)." > <img height=30px widht=30px src=pdf.png>$appname ($appemail) - CV </a></div>\n";
+			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=30px widht=30px src=pdf.png> </a></div>\n";
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}
@@ -45,7 +45,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 			$refname  = get_refname($p, $h, $rh);
 			$refemail = get_refemail($p, $h, $rh);
 			if (file_exists(file_refpdf($p, $h, $rh))) {
-				echo "<li><div><a href=".file_refpdf($p, $h, $rh)." > <img height=20px widht=20px src=pdf.png>$refname ($refemail) - Cover letter</a></div></li>\n";
+				echo "<li><div><a href=".file_refpdf($p, $h, $rh)." > $refname ($refemail) - Cover letter <img height=20px widht=20px src=pdf.png></a></div></li>\n";
 
 			} else {
 				echo "<li><div>$refname ($refemail) - No cover letter yet</div></li>";
@@ -59,7 +59,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' style='background-color:darkgreen' value='Yes'>";
+		echo "<input type='submit' style='background-color:darkgreen; text-color:white;' value='Yes'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -68,7 +68,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='M'>";
-		echo "<input type='submit' style='background-color:darkorange' value='Maybe'>";
+		echo "<input type='submit' style='background-color:darkorange; text-color:white;' value='Maybe'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -77,7 +77,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='N'>";
-		echo "<input type='submit' style='background-color:darkred' value='No'>";
+		echo "<input type='submit' style='background-color:darkred; text-color:white;' value='No'>";
 		echo "</form>";
 
 

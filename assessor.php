@@ -21,20 +21,20 @@ function get_page($p, $a, $msg = "", $error = "") {
 
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
-	echo "<table style='border: 1px solid black; border-collapse: collapse;'>\n";
+	echo "<table style='border: 1px solid gray; border-collapse: collapse;'>\n";
 	echo "<tr><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
 
 		$appname = get_appname($p, $h);
-		echo "<tr><td>";
+		echo "<tr style='padding:10px;'><td>";
 		if (file_exists(file_apppdf($p, $h))) {
 			echo "<div><a href=". file_apppdf($p, $h)." > <img height=30px widht=30px src=pdf.png>$appname ($appemail) - CV </a></div>\n";
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}
-		echo "</td><td>";
+		echo "</td><td><ul>";
 
 		$referees = get_referees($p, $h);
 		$referees = explode( "\n", $referees );
@@ -45,13 +45,13 @@ function get_page($p, $a, $msg = "", $error = "") {
 			$refname  = get_refname($p, $h, $rh);
 			$refemail = get_refemail($p, $h, $rh);
 			if (file_exists(file_refpdf($p, $h, $rh))) {
-				echo "<div><a href=".file_refpdf($p, $h, $rh)." > <img height=20px widht=20px src=pdf.png>$refname ($refemail) - Cover letter</a></div>\n";
+				echo "<li><div><a href=".file_refpdf($p, $h, $rh)." > <img height=20px widht=20px src=pdf.png>$refname ($refemail) - Cover letter</a></div></li>\n";
 
 			} else {
-				echo "<div>$refname ($refemail) - No cover letter yet</div>";
+				echo "<li><div>$refname ($refemail) - No cover letter yet</div></li>";
 			}
 		}
-		echo "</td><td>";
+		echo "</ul></td><td>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";
@@ -59,7 +59,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' value='Yes'>";
+		echo "<input type='submit' style='background-color:darkgreen' value='Yes'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -68,7 +68,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='M'>";
-		echo "<input type='submit' value='Maybe'>";
+		echo "<input type='submit' style='background-color:darkorange' value='Maybe'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -77,7 +77,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='N'>";
-		echo "<input type='submit' value='No'>";
+		echo "<input type='submit' style='background-color:darkred' value='No'>";
 		echo "</form>";
 
 

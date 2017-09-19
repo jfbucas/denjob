@@ -3,6 +3,7 @@
 include "func.php";
 
 $msg = "";
+$error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $p = $_POST['p'];
@@ -21,37 +22,43 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	$h=do_hash($appemail);
 
 	# add address to applicants
-	$applicants = get_applicants($p);
-	if(strpos($applicants, $appemail) === false) {
+	$applicants = explode( "\n", get_applicants($p) );
+	$key = array_search( $appemail, $applicants );
+	if ($key === false) {
 		$fh = fopen(file_applicants($p), 'a') or die("can't open file");
 		fwrite($fh, $appemail . "\n");
 		fclose($fh);
+
+		# store name/email
+		if (!is_dir(file_jobdocuments($p))) mkdir( file_jobdocuments($p) );
+		if (!is_dir(file_appdir($p, $h))) mkdir( file_appdir($p, $h) );
+		$fh = fopen( file_appname($p, $h), 'w+') or die("can't open file");
+		fwrite($fh, $appname);
+		fclose($fh);
+		$fh = fopen( file_appemail($p, $h), 'w+') or die("can't open file");
+		fwrite($fh, $appemail);
+		fclose($fh);
+
+		$msg="Thank you $appname for applying to $jobtitle, please check your email ($appemail) for a link to continue with your application.";
+	}else{
+		$error="$appemail already applied, sending email again.";
 	}
 
-	# store name/email
-	if (!is_dir(file_jobdocuments($p))) mkdir( file_jobdocuments($p) );
-	if (!is_dir(file_appdir($p, $h))) mkdir( file_appdir($p, $h) );
-	$fh = fopen( file_appname($p, $h), 'w+') or die("can't open file");
-	fwrite($fh, $appname);
-	fclose($fh);
-	$fh = fopen( file_appemail($p, $h), 'w+') or die("can't open file");
-	fwrite($fh, $appemail);
-	fclose($fh);
-
-	$jobtitle = get_jobtitle($p);
-
 	# email unique link to fill details
+	$jobtitle = get_jobtitle($p);
 	mail_applicant($appname, $appemail, $jobtitle, $p, $h);
 
-	$msg="<font color=green>Thank you $appname for applying to $jobtitle, please check your email ($appemail) for a link to continue with your application.</font>";
 }
 
 echo "<img src=sitelogo.png>\n";
 echo "<h1> $EMAIL_SUBJECT </h1>\n";
 echo "<h2> Positions currently open: </h2>\n";
 
-if ( $msg != "" ) {
-	echo "<h3>$msg</h3>\n";
+if ($msg != "") {
+	echo "<h4> <font color=green>$msg</font> </h4>";
+}
+if ($error != "") {
+	echo "<h4> <font color=red>$error</font> </h4>";
 }
 
 echo "<hr>";

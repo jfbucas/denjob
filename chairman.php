@@ -117,10 +117,11 @@ function get_results_page($p, $c) {
 
 			$v = get_appscore($p, $h, $a);
 			$color = "white";
-			if ($v == "Y") { $color = "#24ff24"; }
-			if ($v == "M") { $color = "#ff9224"; }
-			if ($v == "N") { $color = "#ff2424"; }
-			echo "<input type='submit' style='background-color:$color;' value=' ' alt='$assemail'>";
+			$text =  "_";
+			if ($v == "Y") { $color = "#24ff24"; $text = "O"; } 
+			if ($v == "M") { $color = "#ff9224"; $text = "-"; }
+			if ($v == "N") { $color = "#ff2424"; $text = "X"; }
+			echo "<input type='submit' style='background-color:$color;' value='$text' alt='$assemail'>";
 
 		}
 		echo "</td></tr>";

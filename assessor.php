@@ -16,13 +16,12 @@ function get_page($p, $a, $msg = "", $error = "") {
 	}
 
 	
-	echo "<h3> Applicants </h3>\n";
-	
+	#echo "<h3> Applicants </h3>\n";
 	#echo "<h5> List of current referees </h5>\n";
 
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
-	echo "<table>\n";
+	echo "<table style='border: 1px solid black; border-collapse: collapse;'>\n";
 	echo "<tr><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
@@ -54,7 +53,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		}
 		echo "</td><td>";
 
-		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
@@ -63,22 +62,22 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='submit' value='Yes'>";
 		echo "</form>";
 
-		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
-		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' value='Yes'>";
+		echo "<input type='hidden' name='v' value='M'>";
+		echo "<input type='submit' value='Maybe'>";
 		echo "</form>";
 
-		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
-		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' value='Yes'>";
+		echo "<input type='hidden' name='v' value='N'>";
+		echo "<input type='submit' value='No'>";
 		echo "</form>";
 
 

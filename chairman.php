@@ -93,7 +93,7 @@ function get_results_page($p, $c) {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th align=center>Scores</th><th>Total</th></tr>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th align=center>Scores</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;

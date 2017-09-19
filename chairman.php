@@ -121,7 +121,7 @@ function get_results_page($p, $c) {
 			if ($v == "Y") { $color = "#24ff24"; $text = "O"; } 
 			if ($v == "M") { $color = "#ff9224"; $text = "-"; }
 			if ($v == "N") { $color = "#ff2424"; $text = "X"; }
-			echo "<input type='submit' style='background-color:$color;' value='$text' alt='$assemail'>";
+			echo "<input type='submit' style='background-color:$color;' value=' ' alt='$assemail'>";
 
 		}
 		echo "</td></tr>";

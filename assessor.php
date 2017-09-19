@@ -54,9 +54,9 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "</ul></td><td valign=middle style='padding:10px'>";
 
 		$v = get_appscore($p, $h, $a);
-		if ($v == "Y") { $ycolor = "lightgreen";  }else{ $ycolor = "darkgreen"; }
-		if ($v == "M") { $mcolor = "lightorange"; }else{ $mcolor = "darkorange"; }
-		if ($v == "N") { $ncolor = "lightred";    }else{ $ncolor = "darkred"; }
+		if ($v == "Y") { $ycolor = "#24ff24";  }else{ $ycolor = "#004b00"; }
+		if ($v == "M") { $mcolor = "#ff9224"; }else{ $mcolor = "#4b2600"; }
+		if ($v == "N") { $ncolor = "#ff2424";    }else{ $ncolor = "#4b0000"; }
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";

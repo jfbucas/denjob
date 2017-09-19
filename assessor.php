@@ -28,13 +28,13 @@ function get_page($p, $a, $msg = "", $error = "") {
 		if (!valid_p_h( $p, $h )) continue;
 
 		$appname = get_appname($p, $h);
-		echo "<tr style='border: 1px solid gray; padding:10px;'><td style='padding:10px'>";
+		echo "<tr style='border: 1px solid gray; padding:10px;'><td valign=middle style='padding:10px'>";
 		if (file_exists(file_apppdf($p, $h))) {
 			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=30px widht=30px src=pdf.png> </a></div>\n";
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}
-		echo "</td><td style='padding:10px'><ul>";
+		echo "</td><td valign=middle style='padding:10px'><ul>";
 
 		$referees = get_referees($p, $h);
 		$referees = explode( "\n", $referees );
@@ -51,7 +51,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 				echo "<li><div>$refname ($refemail) - No cover letter yet</div></li>";
 			}
 		}
-		echo "</ul></td><td style='padding:10px'>";
+		echo "</ul></td><td valign=middle style='padding:10px'>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";

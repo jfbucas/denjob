@@ -22,7 +22,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?<br><font color=green>Yes</font>/<font color=orange>Maybe</font>/<font color=red>No</font></th></tr>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th align=center>Qualifies ?<br><font color=green>Yes</font> / <font color=orange>Maybe</font> / <font color=red>No</font></th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
@@ -51,7 +51,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 				echo "<li><div>$refname ($refemail) - No cover letter yet</div></li>";
 			}
 		}
-		echo "</ul></td><td valign=middle style='padding:10px'>";
+		echo "</ul></td><td align=center valign=middle style='padding:10px'>";
 
 		$v = get_appscore($p, $h, $a);
 		if ($v == "Y") { $ycolor = "#24ff24"; }else{ $ycolor = "#004b00"; }

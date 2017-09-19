@@ -53,13 +53,18 @@ function get_page($p, $a, $msg = "", $error = "") {
 		}
 		echo "</ul></td><td valign=middle style='padding:10px'>";
 
+		$v = get_appscore($p, $h, $a);
+		if ($v == "Y") { $ycolor = "green";  }else{ $ycolor = "darkgreen"; }
+		if ($v == "M") { $mcolor = "orange"; }else{ $mcolor = "darkorange"; }
+		if ($v == "N") { $ncolor = "red";    }else{ $ncolor = "darkred"; }
+
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
 		echo "<input type='hidden' name='action' value='app_qualifies'>";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' style='background-color:darkgreen; color:white;' value=' Yes '>";
+		echo "<input type='submit' style='background-color:$ycolor; color:white;' value=' Yes '>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -68,7 +73,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='M'>";
-		echo "<input type='submit' style='background-color:darkorange; color:white;' value='Maybe'>";
+		echo "<input type='submit' style='background-color:$mcolor; color:white;' value='Maybe'>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -77,7 +82,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='N'>";
-		echo "<input type='submit' style='background-color:darkred; color:white;' value=' No  '>";
+		echo "<input type='submit' style='background-color:$ncolor; color:white;' value=' No  '>";
 		echo "</form>";
 
 
@@ -114,6 +119,17 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         $action = $_POST['action'];
 	switch ($action) {
+		case "app_qualifies":
+		        $h = $_POST['h'];
+		        $v = $_POST['v'];
+			valid_p_h($p, $h) or die("Invalid Applicant");
+			if (( $v != "Y" ) || ( $v != "N" ) || ( $v != "M" ) ) die("Invalid score");
+
+			$fh = fopen(file_appscore($p, $h, $a), 'w+') or die("can't open file");
+			fwrite($fh, $v);
+			fclose($fh);
+
+			break;
 		case "refresh" : break;
 	}
 

@@ -22,7 +22,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?<br><font color=green>Yes</font>/<font color=orange>Maybe</font>/<font color=red>No</font></th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
@@ -64,7 +64,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='Y'>";
-		echo "<input type='submit' style='background-color:$ycolor; color:white;' value=' Yes '>";
+		echo "<input type='submit' style='background-color:$ycolor; color:white;' value=' '>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -73,7 +73,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='M'>";
-		echo "<input type='submit' style='background-color:$mcolor; color:white;' value='Maybe'>";
+		echo "<input type='submit' style='background-color:$mcolor; color:white;' value=' '>";
 		echo "</form>";
 
 		echo "<form style='display: inline;' action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
@@ -82,7 +82,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
 		echo "<input type='hidden' name='v' value='N'>";
-		echo "<input type='submit' style='background-color:$ncolor; color:white;' value=' No  '>";
+		echo "<input type='submit' style='background-color:$ncolor; color:white;' value=' '>";
 		echo "</form>";
 
 

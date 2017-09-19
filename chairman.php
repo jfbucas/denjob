@@ -118,7 +118,7 @@ function get_results_page($p, $c) {
 			if ($v == "Y") { $color = "#24ff24"; }
 			if ($v == "M") { $color = "#ff9224"; }
 			if ($v == "N") { $color = "#ff2424"; }
-			echo "<input type='submit' style='background-color:$color;' value=' '>";
+			echo "<input type='submit' style='background-color:$color;' value=' ' alt='$assemail'>";
 
 		}
 		echo "</td></tr>";

@@ -88,6 +88,6 @@ if ( $nb_job_open == 0 ) {
 	echo "<hr>";
 }
 
-echo "<!-- h6>$COPYRIGHT</h6 -->";
+echo "<h6><font color=lightgray>$COPYRIGHT</font></h6>";
 
 ?>

@@ -25,7 +25,7 @@ function get_page($c, $msg = "", $error = "") {
 		$status = get_jobstatus($p);
 		$open = strpos($status, "open" );
 		if ( $open !== false ) {
-			echo "Status: <font color=green> Open </font><br>\n";
+			echo "Status: <font color=green> Open </font> \n";
 			echo "<form action='chairman.php?c=$c' method='post' name='formcloseposition'>";
 			echo "<input type='hidden' name='action' value='closeposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
@@ -33,7 +33,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "<input type='submit' value='Close'>";
 			echo "</form>";
 		} else {
-			echo "Status: <font color=red> Closed </font><br>\n";
+			echo "Status: <font color=red> Closed </font> \n";
 			echo "<form action='chairman.php?c=$c' method='post' name='formopenposition'>";
 			echo "<input type='hidden' name='action' value='openposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
@@ -65,7 +65,7 @@ function get_page($c, $msg = "", $error = "") {
 
 			$assname = get_assname($p, $a);
 			echo "<li>  $assname ($assemail) ";
-			echo "<form action='chairman.php?c=$c' method='post' name='formdelass'>";
+			echo "<form action='chairman.php?c=$c' method='post' name='formdelass' style='display: inline;'>";
 			echo "<input type='hidden' name='action' value='del_assessor'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -75,9 +75,60 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</li>";
 		}
 		echo "</ul>";
+		echo "<br>";
+		echo "<form action='chairman.php?c=$c' method='post' name='formresults'>";
+		echo "<input type='hidden' name='action' value='results'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='submit' value='View results'>";
+		echo "</form>";
 		echo "<hr>";
 	}
 }
+
+function get_results_page($p) {
+
+	echo "<h2> Results for position: ". get_jobtitle($p) . "<h2>\n";
+
+	$applicants = get_applicants($p);
+	$applicants = explode( "\n", $applicants );
+	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th align=center>Qualifies ?<br><font color=green>Yes</font> / <font color=orange>Maybe</font> / <font color=red>No</font></th></tr>\n";
+	foreach ($applicants as $appemail) {
+		$h=do_hash($appemail);
+		if (!valid_p_h( $p, $h )) continue;
+
+		$appname = get_appname($p, $h);
+		echo "<tr style='border: 1px solid lightgray; padding:10px;'><td valign=middle style='padding:10px'>";
+		if (file_exists(file_apppdf($p, $h))) {
+			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=20px widht=20px src=pdf.png> </a></div>\n";
+		} else {
+			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
+		}
+		echo "</td><td align=center valign=middle style='padding:10px'>";
+
+		$assessors = get_assessors($p);
+		$assessors = explode( "\n", $assessors );
+		foreach ($assessors as $assemail) {
+			$a=do_hash($assemail);
+			if (!valid_p_a( $p, $a )) continue;
+
+			$v = get_appscore($p, $h, $a);
+			$color = "white";
+			if ($v == "Y") { $ycolor = "#24ff24"; }
+			if ($v == "M") { $mcolor = "#ff9224"; }
+			if ($v == "N") { $ncolor = "#ff2424"; }
+			echo "<input type='submit' style='background-color:$color;' value=' '>";
+
+		}
+		echo "</td></tr>";
+	}
+	echo "</table>";
+
+	echo "<hr>\n";
+	show_job_title_description($p);
+}
+
 
 
 function sendassmail( $p, $a ) {
@@ -217,7 +268,10 @@ if ( isset($argv) ){
 				$error="Assessor $assemail not found";
 			}
 			break;
-		case "refresh" : break;
+
+		case "results" :
+			get_results_page($p);
+			break;
 	}
 
 	get_page($c, $msg, $error);

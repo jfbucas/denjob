@@ -124,6 +124,14 @@ function get_results_page($p) {
 		echo "</td></tr>";
 	}
 	echo "</table>";
+	echo "<br>";
+	echo "<form action='chairman.php?c=$c' method='post' name='formresults'>";
+	echo "<input type='hidden' name='action' value='results'>";
+	echo "<input type='hidden' name='c' value='$c'>";
+	echo "<input type='hidden' name='p' value='$p'>";
+	echo "<input type='submit' value='Refresh'>";
+	echo "</form>";
+	echo "<br>";
 
 	echo "<hr>\n";
 	show_job_title_description($p);

@@ -22,13 +22,13 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid gray; border-collapse: collapse;'>\n";
-	echo "<tr style='padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
+	echo "<tr style='border: 1px solid gray; padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
 
 		$appname = get_appname($p, $h);
-		echo "<tr style='padding:10px;'><td>";
+		echo "<tr style='border: 1px solid gray; padding:10px;'><td>";
 		if (file_exists(file_apppdf($p, $h))) {
 			echo "<div><a href=". file_apppdf($p, $h)." > <img height=30px widht=30px src=pdf.png>$appname ($appemail) - CV </a></div>\n";
 		} else {

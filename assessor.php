@@ -22,63 +22,69 @@ function get_page($p, $a, $msg = "", $error = "") {
 
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
-	echo "<ul>\n";
+	echo "<table>\n";
+	echo "<th><td>Applicants</td><td>Referees</td><td>Qualifies ?</td></th>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
 
-		$rh=do_hash($refemail);
-
 		$appname = get_appname($p, $h);
-		echo "<li>";
+		echo "<tr><td>";
 		if (file_exists(file_apppdf($p, $h))) {
 			echo "<div><a href=". file_apppdf($p, $h)." > <img height=30px widht=30px src=pdf.png>$appname ($appemail) - CV </a></div>\n";
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}
+		echo "</td><td>"
 
-		echo "List of referees:\n";
 		$referees = get_referees($p, $h);
 		$referees = explode( "\n", $referees );
-		echo "<ul>\n";
 		foreach ($referees as $refemail) {
 			$rh=do_hash($refemail);
 			if (!valid_p_h_rh( $p, $h, $rh )) continue;
 
 			$refname  = get_refname($p, $h, $rh);
 			$refemail = get_refemail($p, $h, $rh);
-			echo "<li>";
 			if (file_exists(file_refpdf($p, $h, $rh))) {
-				echo "<div><a href=".file_refpdf($p, $h, $rh)." > <img height=20px widht=20px src=pdf.png>$refname ($refemailCover) - Cover letter</a></div>\n";
+				echo "<div><a href=".file_refpdf($p, $h, $rh)." > <img height=20px widht=20px src=pdf.png>$refname ($refemail) - Cover letter</a></div>\n";
 
 			} else {
 				echo "<div>$refname ($refemail) - No cover letter yet</div>";
 			}
-			echo "</li>";
 		}
-		echo "</ul><br><br>";
-		/*
+		echo "</td><td>";
 
-		echo "<form action='applicant.php' method='post' name='formsendrefmail'>";
-		echo "<input type='hidden' name='action' value='sendrefmail'>";
+		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<input type='hidden' name='action' value='app_qualifies'>";
 		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='hidden' name='h' value='$h'>";
-		echo "<input type='hidden' name='rh' value='$rh'>";
-		echo "<input type='submit' value='Re-Send link'>";
+		echo "<input type='hidden' name='v' value='Y'>";
+		echo "<input type='submit' value='Yes'>";
 		echo "</form>";
-		
-		echo "<form action='applicant.php' method='post' name='formdelref'>";
-		echo "<input type='hidden' name='action' value='delref'>";
-		echo "<input type='hidden' name='p' value='$p'>";
-		echo "<input type='hidden' name='h' value='$h'>";
-		echo "<input type='hidden' name='rh' value='$rh'>";
-		echo "<input type='submit' value='Delete'>";
-		echo "</form>";
-		*/
 
-		echo "</li>";
+		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<input type='hidden' name='action' value='app_qualifies'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
+		echo "<input type='hidden' name='h' value='$h'>";
+		echo "<input type='hidden' name='v' value='Y'>";
+		echo "<input type='submit' value='Yes'>";
+		echo "</form>";
+
+		echo "<form action='assessor.php?p=$p&a=$a' method='post' name='formqualifies'>";
+		echo "<input type='hidden' name='action' value='app_qualifies'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
+		echo "<input type='hidden' name='h' value='$h'>";
+		echo "<input type='hidden' name='v' value='Y'>";
+		echo "<input type='submit' value='Yes'>";
+		echo "</form>";
+
+
+		echo "</td></tr>";
 	}
-	echo "</ul>";
+	echo "</table>";
 	echo "<br>";
 	echo "<br>";
 	echo "<br>";

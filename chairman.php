@@ -197,17 +197,17 @@ if ( isset($argv) ){
 		        $p  = $_POST['p'];
 		        $c  = $_POST['c'];
 		        $a  = $_POST['a'];
-			valid_p_a($p, $a, $rh) or die("Invalid URL");
+			valid_p_a($p, $a) or die("Invalid URL");
 
 			$assemail = get_assemail($p, $a);
 
 			# del address from assessors
-			$assessors = explode( "\n", get_assessors($p, $h) );
+			$assessors = explode( "\n", get_assessors($p) );
 			$key = array_search( $assemail, $assessors );
 			if ($key !== false) {
 				unset($assessors[$key]);
 				$assessors = implode( "\n", $assessors );
-				$fh = fopen(file_assessors($p, $h), 'w+') or die("can't open file");
+				$fh = fopen(file_assessors($p), 'w+') or die("can't open file");
 				fwrite($fh, $assessors);
 				fclose($fh);
 

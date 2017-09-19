@@ -132,6 +132,7 @@ if ( isset($argv) ){
 
         $action = $_POST['action'];
 	switch ($action) {
+
 		case "closeposition":
 			$fh = fopen(file_jobstatus($p), 'w+');
 			fwrite($fh, "close");
@@ -139,6 +140,7 @@ if ( isset($argv) ){
 			$msg="Position $p closed";
 			$error="";
 			break;
+
 		case "openposition":
 			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file");
 			fwrite($fh, "open");
@@ -180,22 +182,19 @@ if ( isset($argv) ){
 			}
 
 			break;
+
 		case "sendassmail" :
 
-		        $p  = $_POST['p'];
 		        $a  = $_POST['a'];
 			valid_p_a($p, $a) or die("Invalid URL");
 
 			$msg="Reminder sent to assessor";
 			$error="";
 			sendassmail($p, $a);
-
 			break;
 
 		case "del_assessor" :
 
-		        $p  = $_POST['p'];
-		        $c  = $_POST['c'];
 		        $a  = $_POST['a'];
 			valid_p_a($p, $a) or die("Invalid URL");
 

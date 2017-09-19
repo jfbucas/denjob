@@ -80,6 +80,7 @@ function file_assemail($p, $a){
 
 function get_chairmans(){
 	if (!file_exists(file_chairmans())) return "";
+	if (filesize(file_chairmans()) == 0) return "";
 	$s = file_get_contents(file_chairmans()) or die("Unable to open file chairmans!");
 	return $s;
 }
@@ -97,6 +98,7 @@ function get_jobstatus($p){
 }
 function get_applicants($p){
 	if (!file_exists(file_applicants($p))) return "";
+	if (filesize(file_applicants($p)) == 0) return "";
 	$s = file_get_contents(file_applicants($p)) or die("Unable to open file applicants!");
 	return $s;
 }
@@ -110,6 +112,7 @@ function get_appemail($p, $h){
 }
 function get_referees($p, $h) {
 	if (!file_exists(file_referees($p, $h))) return "";
+	if (filesize(file_referees($p, $h)) == 0) return "";
 	$s = file_get_contents(file_referees($p, $h)) or die("Unable to open file referees!");
 	return $s;
 }
@@ -123,6 +126,7 @@ function get_refemail($p, $h, $rh){
 }
 function get_assessors($p){
 	if (!file_exists(file_assessors($p))) return "";
+	if (filesize(file_assessors($p)) == 0) return "";
 	$s = file_get_contents(file_assessors($p)) or die("Unable to open file assessors!");
 	return $s;
 }

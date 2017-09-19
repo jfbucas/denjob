@@ -22,7 +22,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid gray; border-collapse: collapse;'>\n";
-	echo "<tr><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
+	echo "<tr style='padding:10px;'><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;

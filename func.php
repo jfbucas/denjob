@@ -115,7 +115,8 @@ function get_appemail($p, $h){
 }
 function get_appscore($p, $h, $a){ 
 	if (!file_exists(file_appscore($p, $h, $a))) return "";
-	$s = file_get_contents(file_appscore($p, $h, $a)) or die("Unable to open file applicant score!");
+	if (filesize(file_appscore($p, $h, $a)) == 0) return "";
+	$s = file_get_contents(file_appscore($p, $h, $a)); #or die("Unable to open file applicant score!");
 	return $s;
 }
 function get_referees($p, $h) {

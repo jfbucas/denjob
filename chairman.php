@@ -201,11 +201,13 @@ if ( isset($argv) ){
 
 			$assemail = get_assemail($p, $a);
 
-			# add address to referees
-			$assessors = get_assessors($p);
-			if(strpos($assessors, $assemail) === true) {
-				$assessors = str_replace( $assmail."\n", "", $assessors );
-				$fh = fopen(file_assessors($p), 'w+') or die("can't open file");
+			# del address from assessors
+			$assessors = explode( "\n", get_assessors($p, $h) );
+			$key = array_search( $assemail, $assessors );
+			if ($key !== false) {
+				unset($assessors[$key]);
+				$assessors = implode( "\n", $assessors );
+				$fh = fopen(file_assessors($p, $h), 'w+') or die("can't open file");
 				fwrite($fh, $assessors);
 				fclose($fh);
 

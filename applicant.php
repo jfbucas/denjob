@@ -180,10 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 			$refemail = get_refemail($p, $h, $rh);
 
-			# add address to referees
-			$referees = get_referees($p, $h);
-			if(strpos($referees, $refemail) !== false) {
-				$referees = str_replace( $refemail, "", $referees );
+			# deld address from referees
+			$referees = explode( "\n", get_referees($p, $h) );
+			$key = array_search( $refemail, $referees );
+			if ($key !== false) {
+				unset($referees[$key]);
+				$referees = implode( "\n", $referees );
 				$fh = fopen(file_referees($p, $h), 'w+') or die("can't open file");
 				fwrite($fh, $referees);
 				fclose($fh);

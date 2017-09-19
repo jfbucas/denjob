@@ -86,7 +86,7 @@ function get_page($c, $msg = "", $error = "") {
 	}
 }
 
-function get_results_page($p) {
+function get_results_page($p, $c) {
 
 	echo "<h2> Results for position: ". get_jobtitle($p) . "<h2>\n";
 
@@ -280,7 +280,7 @@ if ( isset($argv) ){
 			break;
 
 		case "results" :
-			get_results_page($p);
+			get_results_page($p, $c);
 			$do_page=false;
 			break;
 	}

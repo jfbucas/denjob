@@ -23,7 +23,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table>\n";
-	echo "<th><td>Applicants</td><td>Referees</td><td>Qualifies ?</td></th>\n";
+	echo "<tr><th>Applicants</th><th>Referees</th><th>Qualifies ?</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;

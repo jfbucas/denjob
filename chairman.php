@@ -93,7 +93,7 @@ function get_results_page($p) {
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
 	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th>Referees</th><th align=center>Qualifies ?<br><font color=green>Yes</font> / <font color=orange>Maybe</font> / <font color=red>No</font></th></tr>\n";
+	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th>Applicants</th><th align=center>Scores</th></tr>\n";
 	foreach ($applicants as $appemail) {
 		$h=do_hash($appemail);
 		if (!valid_p_h( $p, $h )) continue;
@@ -115,9 +115,9 @@ function get_results_page($p) {
 
 			$v = get_appscore($p, $h, $a);
 			$color = "white";
-			if ($v == "Y") { $ycolor = "#24ff24"; }
-			if ($v == "M") { $mcolor = "#ff9224"; }
-			if ($v == "N") { $ncolor = "#ff2424"; }
+			if ($v == "Y") { $color = "#24ff24"; }
+			if ($v == "M") { $color = "#ff9224"; }
+			if ($v == "N") { $color = "#ff2424"; }
 			echo "<input type='submit' style='background-color:$color;' value=' '>";
 
 		}
@@ -180,6 +180,8 @@ if ( isset($argv) ){
         $c = $_POST['c'];
 	valid_p($p) or die("Invalid URL");
 	valid_c($c) or die("Invalid Chairman URL");
+
+	$do_page = true;
 
         $action = $_POST['action'];
 	switch ($action) {
@@ -271,9 +273,11 @@ if ( isset($argv) ){
 
 		case "results" :
 			get_results_page($p);
+			$do_page=false;
 			break;
 	}
 
-	get_page($c, $msg, $error);
+	if ( $do_page )
+		get_page($c, $msg, $error);
 }
 

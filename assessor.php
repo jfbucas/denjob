@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 		        $h = $_POST['h'];
 		        $v = $_POST['v'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
-			if (( $v != "Y" ) || ( $v != "N" ) || ( $v != "M" ) ) die("Invalid score");
+			if (!(( $v == "Y" ) || ( $v == "N" ) || ( $v == "M" )) ) die("Invalid score");
 
 			$fh = fopen(file_appscore($p, $h, $a), 'w+') or die("can't open file");
 			fwrite($fh, $v);

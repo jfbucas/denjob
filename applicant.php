@@ -1,6 +1,8 @@
 <?php
 include 'func.php';
 
+$msg = "";
+$error = "";
 
 function get_page($p, $h, $msg = "", $error = "") {
 	$appname  = get_appname($p, $h );

@@ -1,6 +1,8 @@
 <?php
 include 'func.php';
 
+$msg = "";
+$error = "";
 
 function get_page($p, $a, $msg = "", $error = "") {
 	$assname  = get_assname($p, $a);

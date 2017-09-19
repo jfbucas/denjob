@@ -1,6 +1,8 @@
 <?php
 include 'func.php';
 
+$msg = "";
+$error = "";
 
 function get_page($c, $msg = "", $error = "") {
 	echo "<h2>Welcome Chairman, you will be able to manage the assessors for each positions below <h2>\n";

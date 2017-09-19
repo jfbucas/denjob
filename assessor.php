@@ -30,7 +30,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		$appname = get_appname($p, $h);
 		echo "<tr style='border: 1px solid gray; padding:10px;'><td valign=middle style='padding:10px'>";
 		if (file_exists(file_apppdf($p, $h))) {
-			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=30px widht=30px src=pdf.png> </a></div>\n";
+			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=20px widht=20px src=pdf.png> </a></div>\n";
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}

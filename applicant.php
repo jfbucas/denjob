@@ -17,7 +17,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 
 	echo "<h3> Resume </h3>\n";
 	echo '<form enctype="multipart/form-data" action="applicant.php?p='.$p.'&h='.$h.'" method="post" name="form_resume">';
-	echo 'Please select CV PDF file to upload (Max:20MB) <input name="resume" size="40" maxlength="50" type="file">';
+	echo 'Please select CV PDF file to upload (Max:20MB) <input name="resume" size="40" maxlength="50" type="file" accept="application/pdf">';
 	echo '<input type="hidden" name="action" value="upload_resume">';
 	echo '<input type="hidden" name="p" value="' . $p . '">';
 	echo '<input type="hidden" name="h" value="' . $h . '">';

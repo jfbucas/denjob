@@ -20,7 +20,7 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 
 	echo "<h3> Cover letter </h3>\n";
 	echo '<form enctype="multipart/form-data" action="referee.php?p='.$p.'&h='.$h.'&rh='.$rh.'" method="post" name="form_cover">';
-	echo 'Please select cover PDF file to upload (Max:20MB) <input name="cover" size="40" type="file">';
+	echo 'Please select cover PDF file to upload (Max:20MB) <input name="cover" size="40" type="file" accept="application/pdf">';
 	echo '<input type="hidden" name="action" value="upload_cover">';
 	echo '<input type="hidden" name="p" value="' . $p . '">';
 	echo '<input type="hidden" name="h" value="' . $h . '">';

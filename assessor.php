@@ -34,7 +34,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		} else {
 			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
 		}
-		echo "</td><td valign=middle style='padding:10px'><ul>";
+		echo "</td><td valign=middle style='padding:10px'><ul style='margin:0px'>";
 
 		$referees = get_referees($p, $h);
 		$referees = explode( "\n", $referees );

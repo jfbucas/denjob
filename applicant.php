@@ -8,7 +8,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	$appname  = get_appname($p, $h );
 	$appemail = get_appemail($p, $h );
 
-	echo "<h2>Welcome $appname, you will be able to manage your application below <h2>\n";
+	echo "<h2>Welcome $appname, you will be able to manage your application below </h2>\n";
 
 	if ($msg != "") {
 		echo "<h4> <font color=green>$msg</font> </h4>";
@@ -17,7 +17,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "<h4> <font color=red>$error</font> </h4>";
 	}
 
-	echo "<div style='border:>";
+	echo "<div style='border: 1px solid lightgray;'>";
 	echo "<h3> Resume </h3>\n";
 	echo '<form enctype="multipart/form-data" action="applicant.php?p='.$p.'&h='.$h.'" method="post" name="form_resume">';
 	echo 'Please select CV PDF file to upload (Max:20MB) <input name="resume" size="40" maxlength="50" type="file" accept="application/pdf">';
@@ -29,11 +29,11 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo '</form>';
 
 	if (file_exists(file_apppdf($p, $h))) {
-		echo "<a target=_blank href=".file_apppdf($p, $h)." > <img height=50px widht=50px src=pdf.png><br> CV </a><br>";
+		echo "<a target=_blank href=".file_apppdf($p, $h)." > <img height=50px width=50px src=pdf.png><br> CV </a><br>";
 	}
 	echo "</div>";
 	
-	echo "<div>";
+	echo "<div style='border: 1px solid lightgray;'>";
 	echo "<h3> Referees </h3>\n";
 	
 	echo "<h5> Add a referee </h5>\n";

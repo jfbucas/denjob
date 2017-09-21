@@ -32,7 +32,7 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	echo '</form>';
 
 	if (file_exists(file_refpdf($p, $h, $rh))) {
-		echo "<a href=".file_refpdf($p, $h, $rh)."> <img height=50px widht=50px src=pdf.png><br> Cover letter </a><br>";
+		echo "<a href=".file_refpdf($p, $h, $rh)."> <img height=50px width=50px src=pdf.png><br> Cover letter </a><br>";
 	}
 
 	echo "<hr>\n";

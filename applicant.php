@@ -84,16 +84,18 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "</ul>";
 	echo "</div>";
 	
+	$finalizable="disabled";
 	if (file_exists(file_apppdf($p, $h)) && ($refname != "")) {
-		echo "<br>";
-		echo "<form action='applicant.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
-		echo "<input type='hidden' name='action' value='finish'>";
-		echo "<input type='hidden' name='p' value='$p'>";
-		echo "<input type='hidden' name='h' value='$h'>";
-		echo "<input type='hidden' name='rh' value='$rh'>";
-		echo "<input type='submit' value='Finalise'>";
-		echo "</form>";
+		$finalizable="";
 	}
+	echo "<br>";
+	echo "<form action='applicant.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
+	echo "<input type='hidden' name='action' value='finish'>";
+	echo "<input type='hidden' name='p' value='$p'>";
+	echo "<input type='hidden' name='h' value='$h'>";
+	echo "<input type='hidden' name='rh' value='$rh'>";
+	echo "<input type='submit' value='Finalise' $finalizable>";
+	echo "</form>";
 
 	echo "<br>";
 	echo "<br>";

@@ -17,7 +17,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "<h4> <font color=red>$error</font> </h4>";
 	}
 
-	echo "<div style='border: 1px solid lightgray;'>";
+	echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 	echo "<h3> Resume </h3>\n";
 	echo '<form enctype="multipart/form-data" action="applicant.php?p='.$p.'&h='.$h.'" method="post" name="form_resume">';
 	echo 'Please select CV PDF file to upload (Max:20MB) <input name="resume" size="40" maxlength="50" type="file" accept="application/pdf">';
@@ -34,7 +34,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "</div>";
 	echo "<br>";
 	
-	echo "<div style='border: 1px solid lightgray;'>";
+	echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 	echo "<h3> Referees </h3>\n";
 	
 	echo "<h5> Add a referee </h5>\n";

@@ -88,7 +88,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<input type='hidden' name='action' value='finish'>";
 	echo "<input type='hidden' name='p' value='$p'>";
 	echo "<input type='hidden' name='h' value='$h'>";
-	echo "<input type='submit' value='Finalise Application'>";
+	echo "<input type='submit' value='Finalise'>";
 	echo "</form>";
 
 	echo "<br>";

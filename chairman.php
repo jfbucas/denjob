@@ -27,7 +27,7 @@ function get_page($c, $msg = "", $error = "") {
 		$status = get_jobstatus($p);
 		if ( $status == "open" ) {
 			echo "Status: <font color=green> Open </font> \n";
-			echo "<form action='chairman.php?c=$c' method='post' name='formcloseposition'>";
+			echo "<form style='display: inline;' action='chairman.php?c=$c' method='post' name='formcloseposition'>";
 			echo "<input type='hidden' name='action' value='closeposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -35,7 +35,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</form>";
 		} else {
 			echo "Status: <font color=red> Closed </font> \n";
-			echo "<form action='chairman.php?c=$c' method='post' name='formopenposition'>";
+			echo "<form style='display: inline;' action='chairman.php?c=$c' method='post' name='formopenposition'>";
 			echo "<input type='hidden' name='action' value='openposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -43,6 +43,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</form>";
 		}
 	
+		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 		echo "<h5> Add an assessor </h5>\n";
 		echo "<form action='chairman.php?c=$c' method='post' name='formaddass'>\n";
 		echo "Assessor Name <input type='text' name='assname' maxlength='50' value=''><br>\n";
@@ -50,7 +51,7 @@ function get_page($c, $msg = "", $error = "") {
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='c' value='$c'>";
 		echo '<input type="hidden" name="action" value="add_assessor">';
-		echo "<input type='submit' value='Submit'>";
+		echo "<input type='submit' value='Add'>";
 		echo "</form>";
 
 		echo "<h5> List of current assessors </h5>\n";
@@ -76,6 +77,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</li>";
 		}
 		echo "</ul>";
+		echo "</div>";
 		echo "<br>";
 		echo "<form action='chairman.php?c=$c' method='post' name='formresults'>";
 		echo "<input type='hidden' name='action' value='results'>";

@@ -42,6 +42,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "<input type='submit' value='Open'>";
 			echo "</form>";
 		}
+		echo "<br>";
 	
 		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 		echo "<h5> Add an assessor </h5>\n";

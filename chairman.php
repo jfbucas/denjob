@@ -25,8 +25,7 @@ function get_page($c, $msg = "", $error = "") {
 		echo "<h4>" . $jobtitle . "</h3>\n";
 
 		$status = get_jobstatus($p);
-		$open = strpos($status, "open" );
-		if ( $open !== false ) {
+		if ( $status == "open" ) {
 			echo "Status: <font color=green> Open </font> \n";
 			echo "<form action='chairman.php?c=$c' method='post' name='formcloseposition'>";
 			echo "<input type='hidden' name='action' value='closeposition'>";
@@ -201,7 +200,7 @@ if ( isset($argv) ){
 			$fh = fopen(file_jobstatus($p), 'w+');
 			fwrite($fh, "close");
 			fclose($fh);
-			$msg="Position $p closed";
+			$msg="Position ". get_jobtitle($p). " closed";
 			$error="";
 			break;
 
@@ -209,7 +208,7 @@ if ( isset($argv) ){
 			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file");
 			fwrite($fh, "open");
 			fclose($fh);
-			$msg="Position $p open";
+			$msg="Position ". get_jobtitle($p). " open";
 			$error="";
 			break;
 

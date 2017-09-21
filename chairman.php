@@ -43,6 +43,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</form>";
 		}
 		echo "<br>";
+		echo "<br>";
 	
 		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 		echo "<h5> Add an assessor </h5>\n";

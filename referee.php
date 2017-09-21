@@ -36,14 +36,17 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 		echo "<a href=".file_refpdf($p, $h, $rh)."> <img height=50px width=50px src=pdf.png><br> Reference letter </a><br>";
 	}
 	echo "</div>";
-	echo "<br>";
-	echo "<form action='referee.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
-	echo "<input type='hidden' name='action' value='finish'>";
-	echo "<input type='hidden' name='p' value='$p'>";
-	echo "<input type='hidden' name='h' value='$h'>";
-	echo "<input type='hidden' name='rh' value='$rh'>";
-	echo "<input type='submit' value='Finalise'>";
-	echo "</form>";
+
+	if (file_exists(file_refpdf($p, $h, $rh))) {
+		echo "<br>";
+		echo "<form action='referee.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
+		echo "<input type='hidden' name='action' value='finish'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='h' value='$h'>";
+		echo "<input type='hidden' name='rh' value='$rh'>";
+		echo "<input type='submit' value='Finalise'>";
+		echo "</form>";
+	}
 
 	echo "<hr>\n";
 	show_job_title_description($p);

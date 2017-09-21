@@ -51,6 +51,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 
 	$referees = get_referees($p, $h);
 	$referees = explode( "\n", $referees );
+	$refname = "";
 	echo "<ul>\n";
 	foreach ($referees as $refemail) {
 		if ( $refemail == "" ) continue;
@@ -82,15 +83,17 @@ function get_page($p, $h, $msg = "", $error = "") {
 	}
 	echo "</ul>";
 	echo "</div>";
-	echo "<br>";
-
-	echo "<form action='applicant.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
-	echo "<input type='hidden' name='action' value='finish'>";
-	echo "<input type='hidden' name='p' value='$p'>";
-	echo "<input type='hidden' name='h' value='$h'>";
-	echo "<input type='hidden' name='rh' value='$rh'>";
-	echo "<input type='submit' value='Finalise'>";
-	echo "</form>";
+	
+	if (file_exists(file_apppdf($p, $h)) && ($refname != "")) {
+		echo "<br>";
+		echo "<form action='applicant.php?p=$p&h=$h&rh=$rh' method='post' name='formfinish'>";
+		echo "<input type='hidden' name='action' value='finish'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='h' value='$h'>";
+		echo "<input type='hidden' name='rh' value='$rh'>";
+		echo "<input type='submit' value='Finalise'>";
+		echo "</form>";
+	}
 
 	echo "<br>";
 	echo "<br>";

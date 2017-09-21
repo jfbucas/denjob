@@ -10,7 +10,7 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	$refname  = get_refname($p, $h, $rh);
 	$refemail = get_refemail($p, $h, $rh);
 
-	echo "<h2>Welcome $refname, Please upload the cover letter for $appname ($appemail) <h2>\n";
+	echo "<h2>Welcome $refname, Please upload the cover letter for $appname ($appemail) </h2>\n";
 
 	if ($msg != "") {
 		echo "<h4> <font color=green>$msg</font> </h4>";
@@ -20,7 +20,6 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	}
 
 
-	echo "<br>";
 	echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 	echo "<h3> Reference Letter </h3>\n";
 	echo '<form enctype="multipart/form-data" action="referee.php?p='.$p.'&h='.$h.'&rh='.$rh.'" method="post" name="form_cover">';

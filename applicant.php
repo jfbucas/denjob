@@ -176,8 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "sendrefmail" :
 
-		        $p  = $_POST['p'];
-		        $h  = $_POST['h'];
 		        $rh = $_POST['rh'];
 			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
 
@@ -189,8 +187,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "del_referee" :
 
-		        $p  = $_POST['p'];
-		        $h  = $_POST['h'];
 		        $rh = $_POST['rh'];
 			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
 
@@ -216,14 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "finish" :
 
-		        $p  = $_POST['p'];
-		        $h  = $_POST['h'];
-		        $rh = $_POST['rh'];
-			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
-
-			$msg="Reminder sent to referee";
+			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV until then.";
 			$error="";
-			sendrefmail($p, $h, $rh);
 
 			break;
 

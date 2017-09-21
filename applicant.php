@@ -17,6 +17,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "<h4> <font color=red>$error</font> </h4>";
 	}
 
+	echo "<div style='border:>";
 	echo "<h3> Resume </h3>\n";
 	echo '<form enctype="multipart/form-data" action="applicant.php?p='.$p.'&h='.$h.'" method="post" name="form_resume">';
 	echo 'Please select CV PDF file to upload (Max:20MB) <input name="resume" size="40" maxlength="50" type="file" accept="application/pdf">';
@@ -30,7 +31,9 @@ function get_page($p, $h, $msg = "", $error = "") {
 	if (file_exists(file_apppdf($p, $h))) {
 		echo "<a target=_blank href=".file_apppdf($p, $h)." > <img height=50px widht=50px src=pdf.png><br> CV </a><br>";
 	}
+	echo "</div>";
 	
+	echo "<div>";
 	echo "<h3> Referees </h3>\n";
 	
 	echo "<h5> Add a referee </h5>\n";
@@ -40,7 +43,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<input type='hidden' name='p' value='$p'>";
 	echo "<input type='hidden' name='h' value='$h'>";
 	echo '<input type="hidden" name="action" value="add_referee">';
-	echo "<input type='submit' value='Submit'>";
+	echo "<input type='submit' value='Add'>";
 	echo "</form>";
 
 	echo "<h5> List of current referees </h5>\n";
@@ -77,6 +80,15 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "</li>";
 	}
 	echo "</ul>";
+	echo "</div>";
+
+	echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formfinish'>";
+	echo "<input type='hidden' name='action' value='finish'>";
+	echo "<input type='hidden' name='p' value='$p'>";
+	echo "<input type='hidden' name='h' value='$h'>";
+	echo "<input type='submit' value='Finalise Application'>";
+	echo "</form>";
+
 	echo "<br>";
 	echo "<br>";
 	echo "<br>";
@@ -84,7 +96,6 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<input type='hidden' name='action' value='refresh'>";
 	echo "<input type='hidden' name='p' value='$p'>";
 	echo "<input type='hidden' name='h' value='$h'>";
-	echo "<input type='hidden' name='rh' value='$rh'>";
 	echo "<input type='submit' value='Refresh page'>";
 	echo "</form>";
 
@@ -160,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			}
 
 			break;
+
 		case "sendrefmail" :
 
 		        $p  = $_POST['p'];
@@ -199,6 +211,20 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$error="Referee $refemail not found";
 			}
 			break;
+
+		case "finish" :
+
+		        $p  = $_POST['p'];
+		        $h  = $_POST['h'];
+		        $rh = $_POST['rh'];
+			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
+
+			$msg="Reminder sent to referee";
+			$error="";
+			sendrefmail($p, $h, $rh);
+
+			break;
+
 		case "refresh" : break;
 	}
 

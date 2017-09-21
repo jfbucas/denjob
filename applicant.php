@@ -32,6 +32,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "<a target=_blank href=".file_apppdf($p, $h)." > <img height=50px width=50px src=pdf.png><br> CV </a><br>";
 	}
 	echo "</div>";
+	echo "<br>";
 	
 	echo "<div style='border: 1px solid lightgray;'>";
 	echo "<h3> Referees </h3>\n";
@@ -81,6 +82,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	}
 	echo "</ul>";
 	echo "</div>";
+	echo "<br>";
 
 	echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formfinish'>";
 	echo "<input type='hidden' name='action' value='finish'>";

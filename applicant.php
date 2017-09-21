@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "finish" :
 
-			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV until then.";
+			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV and referees until then.";
 			$error="";
 
 			break;

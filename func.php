@@ -17,7 +17,7 @@ function file_positionsdir(){
 }
 
 function file_chairmans(){
-	return file_positionsdir()."/".do_hash("chairmans");
+	return file_positionsdir()."/".do_hash("chairmans").".chairmans";
 }
 function file_jobdocuments($p){ 
 	return file_positionsdir()."/$p/documents/";
@@ -35,19 +35,19 @@ function file_jobstatus($p){
 	return file_positionsdir()."/$p/status"; #".do_hash("status");
 }
 function file_applicants($p){
-	return file_positionsdir()."/$p/".do_hash("applicants");
+	return file_positionsdir()."/$p/".do_hash("applicants").".applicants";
 }
 function file_assessors($p){
-	return file_positionsdir()."/$p/".do_hash("assessors");
+	return file_positionsdir()."/$p/".do_hash("assessors").".assessors";
 }
 function file_appdir($p, $h){ 
 	return file_jobdocuments($p)."/$h";
 }
 function file_appname($p, $h){ 
-	return file_jobdocuments($p)."/$h/".do_hash("name");
+	return file_jobdocuments($p)."/$h/".do_hash("name").".name";
 }
 function file_appemail($p, $h){ 
-	return file_jobdocuments($p)."/$h/".do_hash("email");
+	return file_jobdocuments($p)."/$h/".do_hash("email").".email";
 }
 function file_apppdf($p, $h){
 	return file_jobdocuments($p)."/$h/".do_hash($h."pdf").".pdf";
@@ -56,16 +56,16 @@ function file_appscore($p, $h, $a){
 	return file_jobdocuments($p)."/$h/$a.score";
 }
 function file_referees($p, $h) {
-	return file_jobdocuments($p)."/$h/".do_hash("referees");
+	return file_jobdocuments($p)."/$h/".do_hash("referees").".referees";
 }
 function file_refdir($p, $h, $rh){
 	return file_jobdocuments($p)."/$h/$rh";
 }
 function file_refname($p, $h, $rh){
-	return file_jobdocuments($p)."/$h/$rh/".do_hash("name");
+	return file_jobdocuments($p)."/$h/$rh/".do_hash("name").".name";
 }
 function file_refemail($p, $h, $rh){
-	return file_jobdocuments($p)."/$h/$rh/".do_hash("email");
+	return file_jobdocuments($p)."/$h/$rh/".do_hash("email").".email";
 }
 function file_refpdf($p, $h, $rh){
 	return file_jobdocuments($p)."/$h/$rh/".do_hash($rh."pdf").".pdf";
@@ -74,10 +74,10 @@ function file_assdir($p, $a){
 	return file_jobpanel($p)."/$a";
 }
 function file_assname($p, $a){ 
-	return file_jobpanel($p)."/$a/".do_hash("name");
+	return file_jobpanel($p)."/$a/".do_hash("name").".name";
 }
 function file_assemail($p, $a){ 
-	return file_jobpanel($p)."/$a/".do_hash("email");
+	return file_jobpanel($p)."/$a/".do_hash("email").".email";
 }
 
 

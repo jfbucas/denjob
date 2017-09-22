@@ -32,9 +32,9 @@ function get_page($p, $a, $msg = "", $error = "") {
 		$appname = get_appname($p, $h);
 		echo "<tr style='border: 1px solid lightgray; padding:10px;'><td valign=middle style='padding:10px'>";
 		if (file_exists(file_apppdf($p, $h))) {
-			echo "<div><a href=". file_apppdf($p, $h)." > $appname ($appemail) - CV <img height=20px width=20px src=pdf.png> </a></div>\n";
+			echo "<div><a href=". file_apppdf($p, $h)." > $appname <$appemail> - CV <img height=20px width=20px src=pdf.png> </a></div>\n";
 		} else {
-			echo "<div> $appname ($appemail) - No CV available yet</div>\n";
+			echo "<div> $appname <$appemail> - No CV available yet</div>\n";
 		}
 		echo "</td><td valign=middle style='padding:10px'><ul style='margin:0px'>";
 
@@ -47,10 +47,10 @@ function get_page($p, $a, $msg = "", $error = "") {
 			$refname  = get_refname($p, $h, $rh);
 			$refemail = get_refemail($p, $h, $rh);
 			if (file_exists(file_refpdf($p, $h, $rh))) {
-				echo "<li><div><a href=".file_refpdf($p, $h, $rh)." > $refname ($refemail) - Cover letter <img height=20px width=20px src=pdf.png></a></div></li>\n";
+				echo "<li><div><a href=".file_refpdf($p, $h, $rh)." > $refname <$refemail> - Cover letter <img height=20px width=20px src=pdf.png></a></div></li>\n";
 
 			} else {
-				echo "<li><div>$refname ($refemail) - No cover letter yet</div></li>";
+				echo "<li><div>$refname <$refemail> - No cover letter yet</div></li>";
 			}
 		}
 		echo "</ul></td><td align=center valign=middle style='padding:10px'>";

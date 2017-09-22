@@ -15,9 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 	valid_name_email($appname, $appemail);
 
+	$status = get_jobstatus($p);
+	if ( $status == "close" ) {
+		die("Dead $appname, the position is now closed");
+	}
+
 	if ($antispam != antispam_result($p) ) {
 		die("Wrong antispam response, try again.");
 	}
+
 
 	$h=do_hash($appemail);
 

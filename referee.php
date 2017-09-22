@@ -10,6 +10,12 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	$refname  = get_refname($p, $h, $rh);
 	$refemail = get_refemail($p, $h, $rh);
 
+	$status = get_jobstatus($p);
+	if ( $status == "close" ) {
+		echo "<h2>Welcome $refname, the position is now closed </h2>\n";
+		return;
+	}
+
 	echo "<h2>Welcome $refname, Please upload the cover letter for $appname ($appemail) </h2>\n";
 
 	if ($msg != "") {
@@ -68,9 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         $rh = $_POST['rh'];
 	valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
 
-        $action = $_POST['action'];
-	$msg="";
-	$error="";
+	$action = "";
+	$status = get_jobstatus($p);
+	if ( $status == "open" ) {
+	        $action = $_POST['action'];
+	}
 
 	switch ($action) {
 		case "upload_cover" :

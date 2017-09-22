@@ -7,6 +7,12 @@ $error = "";
 function get_page($p, $h, $msg = "", $error = "") {
 	$appname  = get_appname($p, $h );
 	$appemail = get_appemail($p, $h );
+		
+	$status = get_jobstatus($p);
+	if ( $status == "close" ) {
+		echo "<h2>Welcome $appname, the position is now closed </h2>\n";
+		return;
+	}
 
 	echo "<h2>Welcome $appname, you will be able to manage your application below </h2>\n";
 
@@ -137,7 +143,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         $h = $_POST['h'];
 	valid_p_h($p, $h) or die("Invalid URL");
 
-        $action = $_POST['action'];
+	$action = "";
+	$status = get_jobstatus($p);
+	if ( $status == "open" ) {
+	        $action = $_POST['action'];
+	}
+
 	switch ($action) {
 		case "upload_resume" :
 			$msg="CV uploaded";

@@ -28,3 +28,15 @@ Typically, this goes in 3 steps:
  - Create files 'positions/$n/title' and 'positions/$n/desc' for position Title and Description respectively
  - In the chairman interface, toggle the position as 'open'
  - Advertise your link to candidates
+
+
+# Screenshot of the different interfaces
+![Alt text](/img/job_description.png?raw=true "Job Description")
+![Alt text](/img/applicant_view.png?raw=true "Applicant")
+![Alt text](/img/referee_view.png?raw=true "Referee")
+![Alt text](/img/chairman_view.png?raw=true "Chairman")
+![Alt text](/img/assessor_view.png?raw=true "Assessor")
+![Alt text](/img/results_view.png?raw=true "Results")
+
+
+

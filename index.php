@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $p = $_POST['p'];
 	valid_p($p) or die("Invalid URL");
 
+	$jobtitle = get_jobtitle($p);
+
         $appname  = $_POST['appname'];
         $appemail = $_POST['appemail'];
         $antispam = $_POST['antispam'];
@@ -51,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	}
 
 	# email unique link to fill details
-	$jobtitle = get_jobtitle($p);
 	mail_applicant($appname, $appemail, $jobtitle, $p, $h);
 
 }

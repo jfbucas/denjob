@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 	$status = get_jobstatus($p);
 	if ( $status == "close" ) {
-		die("Dead $appname, the position is now closed");
+		die("Dear $appname, the position is now closed");
 	}
 
 	if ($antispam != antispam_result($p) ) {

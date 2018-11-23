@@ -115,7 +115,7 @@ function get_results_page($p, $c) {
 		$assessors = get_assessors($p);
 		$assessors = explode( "\n", $assessors );
 		foreach ($assessors as $assemail) {
-			$assemailshort = split("@", $assemail)[0]; 
+			$assemailshort = split("@", $assemail)[0];
 			$a=do_hash($assemail);
 			if (!valid_p_a( $p, $a )) continue;
 

@@ -115,6 +115,7 @@ function get_results_page($p, $c) {
 		$assessors = get_assessors($p);
 		$assessors = explode( "\n", $assessors );
 		foreach ($assessors as $assemail) {
+			$assemailshort = split("@", $assemail)[0];
 			$a=do_hash($assemail);
 			if (!valid_p_a( $p, $a )) continue;
 
@@ -124,7 +125,7 @@ function get_results_page($p, $c) {
 			if ($v == "Y") { $color = "#24ff24"; $text = "O"; } 
 			if ($v == "M") { $color = "#ff9224"; $text = "-"; }
 			if ($v == "N") { $color = "#ff2424"; $text = "X"; }
-			echo "<input type='submit' style='background-color:$color;' value=' ' alt='$assemail'>";
+			echo "<input type='submit' style='background-color:$color;' value='$assemailshort' alt='$assemail'>";
 
 		}
 		echo "</td></tr>";

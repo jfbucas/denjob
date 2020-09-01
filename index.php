@@ -5,20 +5,95 @@ include "func.php";
 $msg = "";
 $error = "";
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+function get_page($c, $only_p, $msg = "", $error = "") {
+
+	global $COPYRIGHT;
+
+	echo "<a href=index.php><img src=sitelogo.png></a>\n";
+	#echo "<h1> $COMPANY </h1>\n";
+	echo "<h2> Positions currently open: </h2>\n";
+
+	if ($msg != "") {
+		echo "<h4> <font color=green>$msg</font> </h4>";
+	}
+	if ($error != "") {
+		echo "<h4> <font color=red>$error</font> </h4>";
+	}
+
+	echo "<hr>";
+
+	$nb_job_open = 0;
+	$positions = scandir(file_positionsdir());
+	rsort($positions);
+	foreach ($positions as $p) {
+		if ( !is_numeric($p) ) continue;
+		if (($only_p != "") and ( $p != $only_p )) continue;
+
+		$nb_job_open ++;
+
+		$status = get_jobstatus($p);
+		if ( $status ) {
+			$jobtitle = get_jobtitle($p);
+			$jobdesc  = get_jobdesc($p);
+			echo "<h3> <a href=index.php?p=".$p.">" . $jobtitle . "</a></h3>\n";
+			echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
+
+			if ($only_p != "") {
+				echo "<br><br>\n";
+				echo "<b>To start the application process, please fill the following</b>:\n <br>";
+				echo "<form action='index.php' method='post' name='form".$p."'>\n";
+				echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
+				echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
+				echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' size='5' maxlength='5' value=''><br>\n";
+				echo "<input type='hidden' name='p' value='$p'>";
+				echo "<input type='submit' value='Submit'>";
+				echo "</form>";
+			}
+		} else {
+			echo "<font color=gray>\n";
+			show_job_title_description($p);
+			echo "</font>\n";
+			echo "<br><br>\n";
+			echo "<h4> <font color=orange>This application process is now closed</font></h4>\n";
+		}
+		echo "<hr>";
+	}
+
+	# No job open
+	if ( $nb_job_open == 0 ) {
+		echo "There is currently no position open\n";
+		echo "<hr>";
+	}
+
+	echo "<h6><font color=lightgray>$COPYRIGHT</font></h6>";
+}
+
+
+$only_p = "";
+
+if ($_SERVER['REQUEST_METHOD'] == "GET") {
+
+	if (array_key_exists('p', $_GET)) {
+	        $p = $_GET['p'];
+		valid_p($p) or die("Invalid position URL");
+
+		$only_p = $p;
+	}
+
+} else if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $p = $_POST['p'];
-	valid_p($p) or die("Invalid URL");
+	valid_p($p) or die("Invalid position URL");
 
 	$jobtitle = get_jobtitle($p);
 
-        $appname  = $_POST['appname'];
+	$appname   = filter_var($_POST['appname'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW|FILTER_FLAG_ENCODE_AMP );
         $appemail = $_POST['appemail'];
         $antispam = $_POST['antispam'];
 
 	valid_name_email($appname, $appemail);
 
 	$status = get_jobstatus($p);
-	if ( $status == "close" ) {
+	if ( ! $status ) {
 		die("Dear $appname, the position is now closed");
 	}
 
@@ -47,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 		fwrite($fh, $appemail);
 		fclose($fh);
 
-		$msg="Thank you $appname for applying to $jobtitle, please check your email ($appemail) for a link to continue with your application.";
+		$msg="Thank you $appname for considering an application to $jobtitle, please check your email ($appemail) for a link to continue with your application.";
 	}else{
 		$error="$appemail already applied, sending email again.";
 	}
@@ -57,51 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 }
 
-echo "<img src=sitelogo.png>\n";
-echo "<h1> $EMAIL_SUBJECT </h1>\n";
-echo "<h2> Positions currently open: </h2>\n";
-
-if ($msg != "") {
-	echo "<h4> <font color=green>$msg</font> </h4>";
-}
-if ($error != "") {
-	echo "<h4> <font color=red>$error</font> </h4>";
-}
-
-echo "<hr>";
-
-$nb_job_open = 0;
-$positions = scandir(file_positionsdir());
-foreach ($positions as $p) {
-	if ( !is_numeric($p) ) continue;
-
-	$status = get_jobstatus($p);
-	$open = strpos($status, "open" );
-	if ( $open !== false ) {
-		$nb_job_open ++;
-
-		show_job_title_description($p);
-
-		echo "<br><br>\n";
-		echo "To Apply, please fill the following:\n <br>";
-		echo "<form action='index.php' method='post' name='form".$p."'>\n";
-		echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
-		echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
-		echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' size='5' maxlength='5' value=''><br>\n";
-		echo "<input type='hidden' name='p' value='$p'>";
-		echo "<input type='submit' value='Submit'>";
-		echo "</form>";
-
-		echo "<hr>";
-	}
-}
-
-# No job open
-if ( $nb_job_open == 0 ) {
-	echo "There is currently no position open\n";
-	echo "<hr>";
-}
-
-echo "<h6><font color=lightgray>$COPYRIGHT</font></h6>";
+get_page("", $only_p, $msg, $error);
 
 ?>

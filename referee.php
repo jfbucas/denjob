@@ -10,13 +10,13 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	$refname  = get_refname($p, $h, $rh);
 	$refemail = get_refemail($p, $h, $rh);
 
-	$status = get_jobstatus($p);
-	if ( $status == "close" ) {
-		echo "<h2>Welcome $refname, the position is now closed </h2>\n";
-		return;
-	}
 
 	echo "<h2>Welcome $refname, Please upload the cover letter for $appname ($appemail) </h2>\n";
+
+	$status = get_jobstatus($p);
+	if ( ! $status ) {
+		echo "<h4><font color=orange>Please note the position is now closed for new applicants</font></h4>\n";
+	}
 
 	if ($msg != "") {
 		echo "<h4> <font color=green>$msg</font> </h4>";
@@ -39,7 +39,7 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 	echo '</form>';
 
 	if (file_exists(file_refpdf($p, $h, $rh))) {
-		echo "<a href=".file_refpdf($p, $h, $rh)."> <img height=50px width=50px src=pdf.png><br> Reference letter </a><br>";
+		echo "<a href=".file_refpdf($p, $h, $rh)."?t=".time()."> <font color=red size=+8>&#128442;</font><!--img height=50px width=50px src=pdf.png--><br> Reference letter </a><br>";
 	}
 	echo "</div>";
 
@@ -77,6 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 	$action = "";
 	$status = get_jobstatus($p);
 	if ( $status == "open" ) {
+	        $action = $_POST['action'];
+	} else {
 	        $action = $_POST['action'];
 	}
 

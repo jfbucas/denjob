@@ -17,10 +17,10 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<h2>Welcome $appname, you will be able to manage your application below </h2>\n";
 
 	if ($msg != "") {
-		echo "<h4> <font color=green>$msg</font> </h4>";
+		echo "<h1> <font color=green><i>$msg</i></font> </h1>";
 	}
 	if ($error != "") {
-		echo "<h4> <font color=red>$error</font> </h4>";
+		echo "<h1> <font color=red><i>$error</i></font> </h1>";
 	}
 
 	echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
@@ -148,7 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 	switch ($action) {
 		case "upload_resume" :
-			$msg="CV uploaded";
+#			$msg="CV uploaded";
+			$msg="CV uploaded. Please use the CV link below to check that your upload is correct and complete, and re-upload the CV if necessary";
 			$error="";
 			if (! move_uploaded_file( $_FILES['resume']['tmp_name'], file_apppdf($p, $h)) ) {
 				$msg="";
@@ -178,8 +179,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				fwrite($fh, $refemail);
 				fclose($fh);
 
-				sendrefmail($p, $h, $rh);
-				$msg="Referee added and email sent";
+#				sendrefmail($p, $h, $rh);
+#				$msg="Referee added and email sent";
+				$msg="Referee added";
 				$error="";
 			} else {
 				$msg="";
@@ -193,9 +195,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 		        $rh = $_POST['rh'];
 			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
 
-			$msg="Reminder sent to referee";
+#			$msg="Reminder sent to referee";
+			$msg="Referee reminders are disabled";
 			$error="";
-			sendrefmail($p, $h, $rh);
+#			sendrefmail($p, $h, $rh);
 
 			break;
 
@@ -226,7 +229,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "finish" :
 
-			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV and referees until then.";
+#			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV and referees until then.";
+
+			$jobtitle = get_jobtitle($p);
+			$msg="Thank you for your application to the position of $jobtitle We will be in touch in due course.";
 			$error="";
 
 			break;

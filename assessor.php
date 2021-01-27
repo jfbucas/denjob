@@ -16,7 +16,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	echo "</head>";
 	echo "<body>";
 
-	if ($assstatus == "observer") {
+	if ($assstatus == "coordinator") {
 		echo "<h2> Welcome $assname, you will be able to observe the applicants </h2>\n";
 	} else {
 		echo "<h2> Welcome $assname, you will be able to review the applicants </h2>\n";
@@ -29,7 +29,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<h4> <font color=red>$error</font> </h4>";
 	}
 
-	if (($assstatus == "chairman")or($assstatus == "observer")) {
+	if (($assstatus == "chairman")or($assstatus == "coordinator")) {
 		$status = get_jobcondition($p);
 		if ( $status == "open" ) {
 			echo "Status: <font color=green> Open </font> \n";
@@ -66,7 +66,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$applicants = explode( "\n", $applicants );
 	echo "<table id='applicants' style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
 	echo "<thead><tr style='border: 1px solid lightgray; padding:10px;'><th align=right>#</th><th>Applicants</th><th>Referees</th>";
-	if ($assstatus != "observer") 
+	if ($assstatus != "coordinator") 
 		echo "<th align=center>Qualifies ?<br><font color=green>Yes</font> / <font color=orange>Maybe</font> / <font color=red>No</font></th>";
 	echo "</tr></thead>\n";
 	echo "<tbody>\n";
@@ -97,7 +97,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 				echo "<li><div><a href=".file_refpdf($p, $h, $rh)."?t=".time()." > $refname &lt;$refemail&gt; <font color=red size=+2>&#128442;</font><!--img height=20px width=20px src=pdf.png--></a></div></li>\n";
 
 			} else {
-				if (($assstatus == "chairman")or($assstatus == "observer")) {
+				if (($assstatus == "chairman")or($assstatus == "coordinator")) {
 					echo "<li><div alt='no reference letter available yet'>$refname &lt;$refemail&gt;";
 					echo "<form style='display:inline-block; float:right;' action='assessor.php?p=$p&a=$a#applicant$counter' method='post' name='formsendrefmail'>";
 					echo "<input type='hidden' name='action' value='sendrefmail'>";
@@ -115,7 +115,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		}
 		echo "</ul></td>\n";
 
-		if ($assstatus != "observer") {
+		if ($assstatus != "coordinator") {
 			echo "<td align=center valign=middle style='padding:10px'>";
 			$v = get_appscore($p, $h, $a);
 			if ($v == "Y") { $ycolor = "#24ff24"; }else{ $ycolor = "#004b00"; }
@@ -184,7 +184,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "Role: <select name='assstatus'>\n";
 		echo "<option value='normal'>Normal</option>\n";
 		echo "<option value='chairman'>Chairman</option>\n";
-		echo "<option value='observer'>Observer</option>\n";
+		echo "<option value='coordinator'>Coordinator</option>\n";
 		echo "</select>\n";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";

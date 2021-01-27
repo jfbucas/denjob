@@ -4,6 +4,7 @@ $SOFTWARE = "Denjob";
 $VERSION = "v0.4";
 $DESCRIPTION = "Position application web interface.";
 $COPYRIGHT = "$SOFTWARE $VERSION ; $DESCRIPTION";
+$COMPANY = "NAME";
 
 # Salt for hash function
 $HASH_SALT = "#SomeString#";
@@ -19,16 +20,22 @@ $URL="https://jobs.institut.ion";
 $GDPR_MESSAGE = "<a href='Link to notice'>GDPR notice for job applicants</a>";
 
 
+# Signature of the emails
+$EMAIL_SIGNATURE = "Institute administrator";
+
+# The sender email address only
+$EMAIL_ONLY="registrarsoffice@admin.dias.ie";
+
 # The sender email address
-$FROM_EMAIL="Institute administrator <administrator@institut.ion>";
+$EMAIL_FROM="$EMAIL_SIGNATURE <$EMAIL_ONLY>";
 
 # Subject to prefix in all email transactions
-$EMAIL_SUBJECT = "Institution Name";
+$EMAIL_SUBJECT_PREFIX = "[$COMPANY] Job application";
 
 
 # Emails templates
 
-$EMAIL_HEADER = "From: $FROM_EMAIL\n";
+$EMAIL_HEADER = "From: %from\n";
 
 # To Applicant
 $APP_SUBJECT = "%subject - application link";
@@ -41,6 +48,23 @@ Please click on this link to continue with your application:
 %url/applicant.php?p=%p&h=%h
 
 All the best,
+%signature
+EOM;
+
+# To Applicant after the PDF file is uploaded
+$UPLOADED_SUBJECT = "%subject - Application uploaded, please check";
+$UPLOADED_MAIN = <<<EOM
+Dear %appname,
+
+Thank you for your application for the position of of %jobtitle
+
+Your application has been just uploaded. Please use the link below to check that the upload is correct and complete, and re-upload the application if necessary.
+%url/%cv
+
+The application PDF file can be re-uploaded, the application reviewed and finalized at
+%url/applicant.php?p=%p&h=%h
+
+Kind Regards,
 %signature
 EOM;
 

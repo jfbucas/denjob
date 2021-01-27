@@ -49,6 +49,9 @@ function file_jobstatus($p){
 function file_template_applicant($p){ 
 	return file_positionsdir()."/$p/template_applicant";
 }
+function file_template_uploaded($p){ 
+	return file_positionsdir()."/$p/template_uploaded";
+}
 function file_template_response($p){ 
 	return file_positionsdir()."/$p/template_response";
 }
@@ -174,6 +177,12 @@ function get_template_applicant($p){
 	global $APP_MAIN;
 	$s = file_get_contents(file_template_applicant($p));
 	if ( $s === false ) return $APP_MAIN;
+	return $s;
+}
+function get_template_uploaded($p){ 
+	global $UPLOADED_MAIN;
+	$s = file_get_contents(file_template_uploaded($p));
+	if ( $s === false ) return $UPLOADED_MAIN;
 	return $s;
 }
 function get_template_response($p){ 
@@ -302,6 +311,11 @@ function set_template_applicant($p, $t){
 	fwrite($fh, $t);
 	fclose($fh);
 }
+function set_template_uploaded($p, $t){ 
+	$fh = fopen(file_template_uploaded($p), 'w+') or die("Unable to write file template uploaded!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
 function set_template_response($p, $t){ 
 	$fh = fopen(file_template_response($p), 'w+') or die("Unable to write file template response!");
 	fwrite($fh, $t);
@@ -393,7 +407,7 @@ function valid_status($status) {
 	switch ($status) {
 		case "":
 		case "chairman":
-		case "observer":
+		case "coordinator":
 		case "normal":
 			return true;
 	}
@@ -479,6 +493,28 @@ function mail_applicant($appname, $appemail, $jobtitle, $p, $h) {
 	do_mail ( $p, $to, $APP_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
+function mail_applicant_uploaded($p, $h) {
+	global $EMAIL_HEADER, $UPLOADED_SUBJECT;
+
+        $appname  = get_appname($p, $h);
+        $appemail = get_appemail($p, $h);
+        $jobtitle = get_jobtitle($p);
+
+	$to = "$appemail";
+
+	$main = get_template_uploaded($p);
+	$main = str_replace( "%appname", $appname, $main );
+	$main = str_replace( "%appemail", $appemail, $main );
+	$main = str_replace( "%jobtitle", $jobtitle, $main );
+	$main = str_replace( "%p", $p, $main );
+	$main = str_replace( "%h", $h, $main );
+
+	$cv = file_apppdf($p, $h);
+	$main = str_replace( "%cv", $cv, $main );
+
+	do_mail ($to, $UPLOADED_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
+
 function mail_applicant_response($appname, $appemail, $jobtitle, $p, $h) {
 	global $EMAIL_HEADER, $RESPONSE_SUBJECT;
 
@@ -560,7 +596,7 @@ function mail_admin($adminemail) {
 
 function do_mail( $p, $to, $subject, $main, $header ) {
 
-	global $URL, $EMAIL_FROM, $EMAIL_SUBJECT_PREFIX, $EMAIL_SIGNATURE;
+	global $URL, $EMAIL_FROM, $EMAIL_ONLY, $EMAIL_SUBJECT_PREFIX, $EMAIL_SIGNATURE;
 
 	$header  = str_replace( "%from", $EMAIL_FROM, $header );
 	$subject = str_replace( "%subject", $EMAIL_SUBJECT_PREFIX, $subject );
@@ -581,7 +617,7 @@ function do_mail( $p, $to, $subject, $main, $header ) {
 		fclose($fh);
 	}
 
-	mail( $to, $subject, $main, $header );
+	mail( $to, $subject, $main, $header, "-f $EMAIL_ONLY" );
 }
 
 
@@ -734,6 +770,22 @@ function get_results_page($p, $user, $user_type) {
 
 
 
+// Recursive delete of a folder
+function rrmdir($src) {
+	$dir = opendir($src);
+	while(false !== ( $file = readdir($dir)) ) {
+		if (( $file != '.' ) && ( $file != '..' )) {
+			$full = $src . '/' . $file;
+			if ( is_dir($full) ) {
+				rrmdir($full);
+			} else {
+				unlink($full);
+			}
+		}
+	}
+	closedir($dir);
+	rmdir($src);
+}
 
 
 

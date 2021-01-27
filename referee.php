@@ -90,6 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$msg="";
 				$error="Reference letter couldn't be uploaded";
 			}			
+			if (! is_pdf( file_refpdf($p, $h, $rh) ) ) {
+				unlink( file_refpdf($p, $h, $rh) );
+				$msg="";
+				$error="Reference letter was not in PDF format";
+			}
 			break;
 
 		case "finish" :

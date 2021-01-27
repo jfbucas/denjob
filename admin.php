@@ -49,7 +49,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "<input type='hidden' name='action' value='closeposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
-			echo "<input type='submit' value='Close'>";
+			echo "<input type='submit' style='background-color:black; color:white;' onclick=\"return confirm('This will close the position and delete all incomplete records. Are you sure?')\" value='Close'>";
 			echo "</form>";
 		} else {
 			echo "Status: <font color=red> Closed </font> \n";
@@ -59,6 +59,16 @@ function get_page($c, $msg = "", $error = "") {
 			echo "<input type='hidden' name='c' value='$c'>";
 			echo "<input type='submit' value='Open'>";
 			echo "</form>";
+
+
+			echo "<font color=red> Delete all non applicants </font> \n";
+			echo "<form style='display: inline;' action='admin.php?c=$c' method='post' name='formdeletenonapplicantsposition'>";
+			echo "<input type='hidden' name='action' value='deletenonapplicantsposition'>";
+			echo "<input type='hidden' name='p' value='$p'>";
+			echo "<input type='hidden' name='c' value='$c'>";
+			echo "<input type='submit' style='background-color:black; color:white;' onclick=\"return confirm('This will delete all incomplete records. Are you sure?')\" value='Delete'>";
+			echo "</form>";
+
 		}
 		echo "<br>";
 		echo "<br>";
@@ -71,7 +81,7 @@ function get_page($c, $msg = "", $error = "") {
 		echo "Role: <select name='assstatus'>\n";
 		echo "<option value='normal'>Normal</option>\n";
 		echo "<option value='chairman'>Chairman</option>\n";
-		echo "<option value='observer'>Observer</option>\n";
+		echo "<option value='observer'>Coordinator</option>\n";
 		echo "</select>\n";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='c' value='$c'>";
@@ -169,6 +179,7 @@ if ( isset($argv) ){
 			fclose($fh);
 			$msg="Position ". get_jobtitle($p). " closed";
 			$error="";
+
 			break;
 
 		case "openposition":
@@ -179,6 +190,27 @@ if ( isset($argv) ){
 			fclose($fh);
 			$msg="Position ". get_jobtitle($p). " open";
 			$error="";
+			break;
+
+
+		case "deletenonapplicantsposition":
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			$msg="";
+			$error="";
+
+			$applicants = get_applicants($p);
+			$applicants = explode( "\n", $applicants );
+			foreach ($applicants as $appemail) {
+				$h=do_hash($appemail);
+				if (!valid_p_h( $p, $h )) continue;
+				if (!file_exists(file_apppdf($p, $h))) {
+					$appname = get_appname($p, $h);
+					$msg .= "<br>Applicant $appname deleted";
+					rrmdir(file_appdir($p, $h));
+				}
+			}
+
 			break;
 
 		case "addposition" :
@@ -276,6 +308,9 @@ if ( isset($argv) ){
 				$fh = fopen(file_assessors($p), 'w+') or die("can't open file");
 				fwrite($fh, $assessors);
 				fclose($fh);
+
+				rrmdir(file_assdir($p, $a));
+
 
 				$msg="Assessor has been deleted";
 				$error="";

@@ -39,7 +39,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo '</form>';
 
 	if (file_exists(file_apppdf($p, $h))) {
-		echo "<a target=_blank href=".file_apppdf($p, $h)."?t=".time()." >  <font color=red size=+8>&#128442;</font><!--img height=50px width=50px src=pdf.png--><br> CV </a><br>";
+		echo "<a target=_blank href=".file_apppdf($p, $h)."?t=".time()." >  <font color=red size=+8>&#128442;</font><!--img height=50px width=50px src=pdf.png--><br>Application PDF </a><br>";
 	}
 	echo "</div>";
 	echo "<br>";
@@ -51,7 +51,8 @@ function get_page($p, $h, $msg = "", $error = "") {
 		echo "<h3> Referees </h3>\n";
 		
 		echo "<h5> Add a referee </h5>\n";
-		echo "An email will be sent automatically to the address provided.\n";
+#		echo "An email will be sent automatically to the address provided.\n";
+		echo "Your nominated referees will be contacted at the appropriate stage of the assessment process by our HR section. You will be notified in advance of us contacting your referees.\n";
 		echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formaddref'>\n";
 		echo "Referee Name <input type='text' name='refname' maxlength='50' value=''><br>\n";
 		echo "Referee Email <input type='email' name='refemail' maxlength='50' value=''><br>\n";
@@ -76,15 +77,16 @@ function get_page($p, $h, $msg = "", $error = "") {
 			echo "<li>  $refname ($refemail) ";
 			if (file_exists(file_refpdf($p, $h, $rh))) {
 				echo "<font color=green>Cover letter received</font>";
-			} else {
-				echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formsendrefmail'>";
-				echo "<input type='hidden' name='action' value='sendrefmail'>";
-				echo "<input type='hidden' name='p' value='$p'>";
-				echo "<input type='hidden' name='h' value='$h'>";
-				echo "<input type='hidden' name='rh' value='$rh'>";
-				echo "<input type='submit' value='Re-Send link'>";
-				echo "</form>";
-			}
+			} 
+#			else {
+#				echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formsendrefmail'>";
+#				echo "<input type='hidden' name='action' value='sendrefmail'>";
+#				echo "<input type='hidden' name='p' value='$p'>";
+#				echo "<input type='hidden' name='h' value='$h'>";
+#				echo "<input type='hidden' name='rh' value='$rh'>";
+#				echo "<input type='submit' value='Re-Send link'>";
+#				echo "</form>";
+#			}
 			echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formdelref'>";
 			echo "<input type='hidden' name='action' value='del_referee'>";
 			echo "<input type='hidden' name='p' value='$p'>";
@@ -149,12 +151,14 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 	switch ($action) {
 		case "upload_resume" :
 #			$msg="CV uploaded";
-			$msg="CV uploaded. Please use the CV link below to check that your upload is correct and complete, and re-upload the CV if necessary";
+			$msg="Application uploaded. Please use the Application PDF link below to check that your upload is correct and complete, and re-upload the application if necessary";
 			$error="";
 			if (! move_uploaded_file( $_FILES['resume']['tmp_name'], file_apppdf($p, $h)) ) {
 				$msg="";
-				$error="CV couldn't be uploaded";
-			}			
+				$error="Application PDF couldn't be uploaded";
+			} else {
+				mail_applicant_upload($p, $h);
+			}
 			break;
 		case "add_referee" :
 
@@ -232,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 #			$msg="Thank you for your application. This page will be accessible until the final review by the assessors. You may come back and change your CV and referees until then.";
 
 			$jobtitle = get_jobtitle($p);
-			$msg="Thank you for your application to the position of $jobtitle We will be in touch in due course.";
+			$msg="Thank you for your application for the position of $jobtitle We will be in touch in due course.";
 			$error="";
 
 			break;

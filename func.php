@@ -362,6 +362,28 @@ function mail_applicant($appname, $appemail, $jobtitle, $p, $h) {
 	do_mail ($to, $APP_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
+function mail_applicant_upload($p, $h) {
+	global $EMAIL_HEADER, $UPLOADED_SUBJECT, $UPLOADED_MAIN;
+
+        $appname  = get_appname($p, $h);
+        $appemail = get_appemail($p, $h);
+        $jobtitle = get_jobtitle($p);
+
+	$to = "$appemail";
+
+	$main = $UPLOADED_MAIN;
+	$main = str_replace( "%appname", $appname, $main );
+	$main = str_replace( "%appemail", $appemail, $main );
+	$main = str_replace( "%jobtitle", $jobtitle, $main );
+	$main = str_replace( "%p", $p, $main );
+	$main = str_replace( "%h", $h, $main );
+
+	$cv = file_apppdf($p, $h);
+	$main = str_replace( "%cv", $cv, $main );
+
+	do_mail ($to, $UPLOADED_SUBJECT, $main, $EMAIL_HEADER ) ;
+}
+
 function mail_applicant_response($appname, $appemail, $jobtitle, $p, $h) {
 	global $EMAIL_HEADER, $RESPONSE_SUBJECT, $RESPONSE_MAIN;
 
@@ -443,14 +465,14 @@ function mail_admin($adminemail) {
 
 function do_mail( $to, $subject, $main, $header ) {
 
-	global $URL, $EMAIL_FROM, $EMAIL_SUBJECT_PREFIX, $EMAIL_SIGNATURE;
+	global $URL, $EMAIL_FROM, $EMAIL_ONLY, $EMAIL_SUBJECT_PREFIX, $EMAIL_SIGNATURE;
 
 	$header  = str_replace( "%from", $EMAIL_FROM, $header );
 	$subject = str_replace( "%subject", $EMAIL_SUBJECT_PREFIX, $subject );
 	$main    = str_replace( "%url", $URL, $main );
 	$main    = str_replace( "%signature", $EMAIL_SIGNATURE, $main );
 
-	mail( $to, $subject, $main, $header );
+	mail( $to, $subject, $main, $header, "-f $EMAIL_ONLY" );
 }
 
 
@@ -565,6 +587,22 @@ function get_results_page($p, $user, $user_type) {
 
 
 
+// Recursive delete of a folder
+function rrmdir($src) {
+	$dir = opendir($src);
+	while(false !== ( $file = readdir($dir)) ) {
+		if (( $file != '.' ) && ( $file != '..' )) {
+			$full = $src . '/' . $file;
+			if ( is_dir($full) ) {
+				rrmdir($full);
+			} else {
+				unlink($full);
+			}
+		}
+	}
+	closedir($dir);
+	rmdir($src);
+}
 
 
 

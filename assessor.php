@@ -168,7 +168,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "Role: <select name='assstatus'>\n";
 		echo "<option value='normal'>Normal</option>\n";
 		echo "<option value='chairman'>Chairman</option>\n";
-		echo "<option value='observer'>Observer</option>\n";
+		echo "<option value='observer'>Coordinator</option>\n";
 		echo "</select>\n";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";

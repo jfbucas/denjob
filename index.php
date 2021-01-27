@@ -19,7 +19,8 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 		echo "<h1> <font color=red><i>$error</i></font> </h1>"; exit ;
 	}
 
-	echo "<h2> Positions currently open: </h2>\n";
+	if ($only_p == "")
+		echo "<h2> Positions listed: </h2>\n";
 
 	echo "<hr>";
 
@@ -36,21 +37,22 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 		if ( $status ) {
 			$jobtitle = get_jobtitle($p);
 			$jobdesc  = get_jobdesc($p);
-			echo "<h3> <a href=index.php?p=".$p.">" . $jobtitle . "</a></h3>\n";
-			echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
 
 			if ($only_p != "") {
-				echo "<br><br>\n";
+#				echo "<br><br>\n";
 #н				echo "<b>To start the application process, please fill the following</b>:\n <br>";
-				echo "<b>To start the application process, please enter your details below. You will then be sent a link where you can upload your application. Please note that once you enter your details below your name will appear on the job application system as a prospective candidate up until the closing date. If you haven’t uploaded an application by the closing date, your details will be deleted from the system.</b>\n <br>";
+				echo "<b><i>To start the application process, please enter your details below. You will then be sent a link where you can upload your application. Please note that once you enter your details below your name will appear on the job application system as a prospective candidate up until the closing date. If you haven’t uploaded an application by the closing date, your details will be deleted from the system.</i></b>\n <br>";
 				echo "<form action='index.php' method='post' name='form".$p."'>\n";
 				echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
 				echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
 				echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' size='5' maxlength='5' value=''><br>\n";
 				echo "<input type='hidden' name='p' value='$p'>";
 				echo "<input type='submit' value='Submit'>";
+				echo "<br><br>\n";
 				echo "</form>";
 			}
+			echo "<h3> <a href=index.php?p=".$p.">" . $jobtitle . "</a></h3>\n";
+			echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
 		} else {
 			echo "<font color=gray>\n";
 			show_job_title_description($p);
@@ -58,6 +60,8 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 			echo "<br><br>\n";
 			echo "<h4> <font color=orange>This application process is now closed</font></h4>\n";
 		}
+
+
 		echo "<hr>";
 	}
 

@@ -13,7 +13,7 @@ function get_page($p, $h, $rh, $msg = "", $error = "") {
 
 	echo "<h2>Welcome $refname, Please upload the cover letter for $appname ($appemail) </h2>\n";
 
-	$status = get_jobstatus($p);
+	$status = get_jobcondition($p);
 	if ( ! $status ) {
 		echo "<h4><font color=orange>Please note the position is now closed for new applicants</font></h4>\n";
 	}
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 	valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
 
 	$action = "";
-	$status = get_jobstatus($p);
+	$status = get_jobcondition($p);
 	if ( $status == "open" ) {
 	        $action = $_POST['action'];
 	} else {

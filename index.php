@@ -7,7 +7,7 @@ $error = "";
 
 function get_page($c, $only_p, $msg = "", $error = "") {
 
-	global $COPYRIGHT;
+	global $COPYRIGHT, $GDPR_MESSAGE;
 
 	echo "<a href=index.php><img src=sitelogo.png></a>\n";
 	#echo "<h1> $COMPANY </h1>\n";
@@ -31,7 +31,7 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 
 		$nb_job_open ++;
 
-		$status = get_jobstatus($p);
+		$status = get_jobcondition($p);
 		if ( $status ) {
 			$jobtitle = get_jobtitle($p);
 			$jobdesc  = get_jobdesc($p);
@@ -45,6 +45,7 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 				echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
 				echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
 				echo "Anti-spam: ". antispam_str($p) ." = ? <input type='text' name='antispam' size='5' maxlength='5' value=''><br>\n";
+				echo "<p>$GDPR_MESSAGE</p>";
 				echo "<input type='hidden' name='p' value='$p'>";
 				echo "<input type='submit' value='Submit'>";
 				echo "</form>";
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 	valid_name_email($appname, $appemail);
 
-	$status = get_jobstatus($p);
+	$status = get_jobcondition($p);
 	if ( ! $status ) {
 		die("Dear $appname, the position is now closed");
 	}

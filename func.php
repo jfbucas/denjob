@@ -16,6 +16,9 @@ function file_positionsdir(){
 	return $CFG_POSITIONS_DIR;
 }
 
+function file_emails_log($p){
+	return file_positionsdir()."/$p/".do_hash("emails.log").".emails.log";
+}
 function file_admins(){
 	return file_positionsdir()."/".do_hash("admins").".admins";
 }
@@ -31,11 +34,32 @@ function file_jobtitle($p){
 function file_jobdesc($p){ 
 	return file_positionsdir()."/$p/desc"; #.do_hash("desc");
 }
+function file_jobdue($p){ 
+	return file_positionsdir()."/$p/due"; #.do_hash("due");
+}
 function file_jobrefnumber($p){ 
 	return file_positionsdir()."/$p/refnumber"; #.do_hash("desc");
 }
+function file_jobrefearly($p){ 
+	return file_positionsdir()."/$p/refearly"; #.do_hash("desc");
+}
 function file_jobstatus($p){ 
 	return file_positionsdir()."/$p/status"; #".do_hash("status");
+}
+function file_template_applicant($p){ 
+	return file_positionsdir()."/$p/template_applicant";
+}
+function file_template_response($p){ 
+	return file_positionsdir()."/$p/template_response";
+}
+function file_template_reminder($p){ 
+	return file_positionsdir()."/$p/template_reminder";
+}
+function file_template_ref($p){ 
+	return file_positionsdir()."/$p/template_ref";
+}
+function file_template_ass($p){ 
+	return file_positionsdir()."/$p/template_ass";
 }
 function file_applicants($p){
 	return file_positionsdir()."/$p/".do_hash("applicants").".applicants";
@@ -57,6 +81,9 @@ function file_apppdf($p, $h){
 }
 function file_appresponse($p, $h){ 
 	return file_jobdocuments($p)."/$h/".do_hash("response").".response";
+}
+function file_appshortlist($p, $h){ 
+	return file_jobdocuments($p)."/$h/".do_hash("shortlist").".shortlist";
 }
 function file_appscore($p, $h, $a){ 
 	return file_jobdocuments($p)."/$h/$a.score";
@@ -89,6 +116,15 @@ function file_assstatus($p, $a){
 	return file_jobpanel($p)."/$a/".do_hash("status").".status";
 }
 
+// Check if a file is an actual PDF
+// PDF document, version 1.5
+function is_pdf($f){
+	$output = exec("file -b ".$f, $fulloutput);
+	if ($output === FALSE)
+		return false;
+	
+	return (substr($output,0,12) ===  "PDF document");
+}
 
 function get_admins(){
 	if (!file_exists(file_admins())) return "";
@@ -107,9 +143,19 @@ function get_jobdesc($p){
 	if ( $s === false ) die("Unable to open file jobdesc! ".file_jobdesc($p));
 	return $s;
 }
+function get_jobdue($p){ 
+	$s = file_get_contents(file_jobdue($p));
+	if ( $s === false ) die("Unable to open file jobdue! ".file_jobdue($p));
+	return $s;
+}
 function get_jobrefnumber($p){ 
 	$s = file_get_contents(file_jobrefnumber($p));
 	if ( $s === false ) die("Unable to open file jobrefnumber! ".file_jobrefnumber($p));
+	return $s;
+}
+function get_jobrefearly($p){ 
+	$s = file_get_contents(file_jobrefearly($p));
+	if ( $s === false ) die("Unable to open file jobrefearly! ".file_jobrefearly($p));
 	return $s;
 }
 function get_jobstatus($p){ 
@@ -117,6 +163,42 @@ function get_jobstatus($p){
 	if ( $s === false ) die("Unable to open file jobstatus! ".file_jobstatus($p));
 	$s = strpos($s, "open" );
 	return ($s !== false);
+}
+function get_jobcondition($p){ 
+	$status = get_jobstatus($p);
+	$due    = get_jobdue($p);
+	$date   = date('Y-m-d');
+	return (($status !== false)&&($due > $date));
+}
+function get_template_applicant($p){ 
+	global $APP_MAIN;
+	$s = file_get_contents(file_template_applicant($p));
+	if ( $s === false ) return $APP_MAIN;
+	return $s;
+}
+function get_template_response($p){ 
+	global $RESPONSE_MAIN;
+	$s = file_get_contents(file_template_response($p));
+	if ( $s === false ) return $RESPONSE_MAIN;
+	return $s;
+}
+function get_template_reminder($p){ 
+	global $REMINDER_MAIN;
+	$s = file_get_contents(file_template_reminder($p));
+	if ( $s === false ) return $REMINDER_MAIN;
+	return $s;
+}
+function get_template_ref($p){ 
+	global $REF_MAIN;
+	$s = file_get_contents(file_template_ref($p));
+	if ( $s === false ) return $REF_MAIN;
+	return $s;
+}
+function get_template_ass($p){ 
+	global $ASS_MAIN;
+	$s = file_get_contents(file_template_ass($p));
+	if ( $s === false ) return $ASS_MAIN;
+	return $s;
 }
 function get_applicants($p){
 	if (!file_exists(file_applicants($p))) return "";
@@ -139,6 +221,12 @@ function get_appresponse($p, $h){
 	if (!file_exists(file_appresponse($p, $h))) return "";
 	if (filesize(file_appresponse($p, $h)) == 0) return "";
 	$s = file_get_contents(file_appresponse($p, $h));
+	return $s;
+}
+function get_appshortlist($p, $h){ 
+	if (!file_exists(file_appshortlist($p, $h))) return "";
+	if (filesize(file_appshortlist($p, $h)) == 0) return "";
+	$s = file_get_contents(file_appshortlist($p, $h));
 	return $s;
 }
 function get_appscore($p, $h, $a){ 
@@ -209,6 +297,32 @@ function set_assstatus($p, $a, $status){
 	fclose($fh);
 }
 
+function set_template_applicant($p, $t){ 
+	$fh = fopen(file_template_applicant($p), 'w+') or die("Unable to write file template applicant!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
+function set_template_response($p, $t){ 
+	$fh = fopen(file_template_response($p), 'w+') or die("Unable to write file template response!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
+function set_template_reminder($p, $t){ 
+	$fh = fopen(file_template_reminder($p), 'w+') or die("Unable to write file template reminder!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
+function set_template_ref($p, $t){ 
+	$fh = fopen(file_template_ref($p), 'w+') or die("Unable to write file template ref!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
+function set_template_ass($p, $t){ 
+	$fh = fopen(file_template_ass($p), 'w+') or die("Unable to write file template ass!");
+	fwrite($fh, $t);
+	fclose($fh);
+}
+
 # Validation for parameters
 
 function valid_p($ptest) {
@@ -217,7 +331,9 @@ function valid_p($ptest) {
 	foreach ($positions as $p) {
 		if (!file_exists(file_jobtitle($p))) continue;
 		if (!file_exists(file_jobdesc($p))) continue;
+		if (!file_exists(file_jobdue($p))) continue;
 		if (!file_exists(file_jobrefnumber($p))) continue;
+		if (!file_exists(file_jobrefearly($p))) continue;
 		if ($p == $ptest) return true;
 	}
 	return false;
@@ -319,7 +435,8 @@ function antispam_result( $p ) {
 function show_job_title_description($p) {
 	$jobtitle = get_jobtitle($p);
 	$jobdesc  = get_jobdesc($p);
-	echo "<h3>" . $jobtitle . "</h3>\n";
+	$jobdue   = get_jobdue($p);
+	echo "<h3>" . $jobtitle . " - due on ". $jobdue . "</h3>\n";
 	echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
 }
 
@@ -348,58 +465,58 @@ function sendassmail( $p, $a ) {
 }
 
 function mail_applicant($appname, $appemail, $jobtitle, $p, $h) {
-	global $EMAIL_HEADER, $APP_SUBJECT, $APP_MAIN;
+	global $EMAIL_HEADER, $APP_SUBJECT;
 
 	$to = "$appemail";
 
-	$main = $APP_MAIN;
+	$main = get_template_applicant($p);
 	$main = str_replace( "%appname", $appname, $main );
 	$main = str_replace( "%appemail", $appemail, $main );
 	$main = str_replace( "%jobtitle", $jobtitle, $main );
 	$main = str_replace( "%p", $p, $main );
 	$main = str_replace( "%h", $h, $main );
 
-	do_mail ($to, $APP_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( $p, $to, $APP_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 function mail_applicant_response($appname, $appemail, $jobtitle, $p, $h) {
-	global $EMAIL_HEADER, $RESPONSE_SUBJECT, $RESPONSE_MAIN;
+	global $EMAIL_HEADER, $RESPONSE_SUBJECT;
 
 	$to = "$appemail";
 
-	$main = $RESPONSE_MAIN;
+	$main = get_template_response($p);
 	$main = str_replace( "%appname", $appname, $main );
 	$main = str_replace( "%appemail", $appemail, $main );
 	$main = str_replace( "%jobtitle", $jobtitle, $main );
 	$main = str_replace( "%p", $p, $main );
 	$main = str_replace( "%h", $h, $main );
 
-	do_mail ($to, $RESPONSE_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( $p, $to, $RESPONSE_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 function mail_applicant_reminder($appname, $appemail, $jobtitle, $p, $h) {
-	global $EMAIL_HEADER, $REMINDER_SUBJECT, $REMINDER_MAIN;
+	global $EMAIL_HEADER, $REMINDER_SUBJECT;
 
 	$to = "$appemail";
 
-	$main = $REMINDER_MAIN;
+	$main = get_template_reminder($p);
 	$main = str_replace( "%appname", $appname, $main );
 	$main = str_replace( "%appemail", $appemail, $main );
 	$main = str_replace( "%jobtitle", $jobtitle, $main );
 	$main = str_replace( "%p", $p, $main );
 	$main = str_replace( "%h", $h, $main );
 
-	do_mail ($to, $REMINDER_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( $p, $to, $REMINDER_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 
 
 function mail_referee($refname, $refemail, $appname, $appemail, $jobtitle, $p, $h, $rh) {
-	global $EMAIL_HEADER, $REF_SUBJECT, $REF_MAIN;
+	global $EMAIL_HEADER, $REF_SUBJECT;
 
 	$to = "$refemail";
 
-	$main = $REF_MAIN;
+	$main = get_template_ref($p);
 	$main = str_replace( "%refname", $refname, $main );
 	$main = str_replace( "%refemail", $refemail, $main );
 	$main = str_replace( "%appname", $appname, $main );
@@ -409,23 +526,23 @@ function mail_referee($refname, $refemail, $appname, $appemail, $jobtitle, $p, $
 	$main = str_replace( "%h", $h, $main );
 	$main = str_replace( "%rh", $rh, $main );
 
-	do_mail ($to, $REF_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( $p, $to, $REF_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 
 function mail_assessor($assname, $assemail, $jobtitle, $p, $a) {
-	global $EMAIL_HEADER, $ASS_SUBJECT, $ASS_MAIN;
+	global $EMAIL_HEADER, $ASS_SUBJECT;
 
 	$to = "$assemail";
 
-	$main = $ASS_MAIN;
+	$main = get_template_ass($p);
 	$main = str_replace( "%assname", $assname, $main );
 	$main = str_replace( "%assemail", $assemail, $main );
 	$main = str_replace( "%jobtitle", $jobtitle, $main );
 	$main = str_replace( "%p", $p, $main );
 	$main = str_replace( "%a", $a, $main );
 
-	do_mail ($to, $ASS_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( $p, $to, $ASS_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 function mail_admin($adminemail) {
@@ -436,12 +553,12 @@ function mail_admin($adminemail) {
 	$main = $ADMIN_MAIN;
 	$main = str_replace( "%c", do_hash($adminemail), $main );
 
-	do_mail ($to, $ADMIN_SUBJECT, $main, $EMAIL_HEADER ) ;
+	do_mail ( null, $to, $ADMIN_SUBJECT, $main, $EMAIL_HEADER ) ;
 }
 
 
 
-function do_mail( $to, $subject, $main, $header ) {
+function do_mail( $p, $to, $subject, $main, $header ) {
 
 	global $URL, $EMAIL_FROM, $EMAIL_SUBJECT_PREFIX, $EMAIL_SIGNATURE;
 
@@ -450,11 +567,41 @@ function do_mail( $to, $subject, $main, $header ) {
 	$main    = str_replace( "%url", $URL, $main );
 	$main    = str_replace( "%signature", $EMAIL_SIGNATURE, $main );
 
+	if ($p !== null) {
+		# Add to the emails log
+		$fh = fopen(file_emails_log($p), 'a') or die("Can't open emails log file");
+		fwrite($fh, "___________[ " . date("Y-m-d H:i:s") . " ]________________________________________________________________________\n");
+		fwrite($fh, "\n");
+		fwrite($fh, $header . "\n");
+		fwrite($fh, $subject . "\n");
+		fwrite($fh, "\n");
+		fwrite($fh, $main . "\n");
+		fwrite($fh, "\n");
+		fwrite($fh, "\n");
+		fclose($fh);
+	}
+
 	mail( $to, $subject, $main, $header );
 }
 
 
-
+function get_js_toggle() {
+	echo "<style>";
+	echo ".hide    { display: none;  }";
+	echo ".visible { display: block; }";
+	echo "</style>";
+	echo "";
+	echo "<script>";
+	echo "function toggle(id){";
+	echo "var x = document.getElementById(id);";
+	echo 'if (x.getAttribute("class")=="hide") {';
+	echo 'x.setAttribute("class", "visible");';
+	echo '} else {';
+	echo 'x.setAttribute("class", "hide");';
+	echo '}';
+	echo '}';
+	echo "</script>";
+}
 
 
 
@@ -509,9 +656,10 @@ function get_results_page($p, $user, $user_type) {
 		echo "$score";
 		echo "</td><td>";
 
-		$appresponse = get_appresponse($p, $h);
+		$appresponse  = get_appresponse($p, $h);
+		$appshortlist = get_appshortlist($p, $h);
 
-		if ($appresponse == "") {
+		if (($appshortlist == "")&&($appresponse == "")) {
 			echo "<form style='display: inline;' action='$user_type.php?p=$p' method='post' name='formresponse'>";
 			echo "<input type='hidden' name='action' value='app_response'>";
 			echo "<input type='hidden' name='p' value='$p'>";
@@ -531,8 +679,29 @@ function get_results_page($p, $user, $user_type) {
 			echo "<input type='hidden' name='v' value='Y'>";
 			echo "<input type='submit' style='background-color:darkblue; color:white;' onclick=\"return confirm('Send reminder?')\" value='Reminder'>";
 			echo "</form>";
+
+			echo "<form style='display: inline;' action='$user_type.php?p=$p' method='post' name='formshortlist'>";
+			echo "<input type='hidden' name='action' value='app_shortlist'>";
+			echo "<input type='hidden' name='p' value='$p'>";
+			echo "<input type='hidden' name='c' value='$user'>";
+			echo "<input type='hidden' name='a' value='$user'>";
+			echo "<input type='hidden' name='h' value='$h'>";
+			echo "<input type='hidden' name='v' value='Y'>";
+			echo "<input type='submit' style='background-color:darkgreen; color:white;' onclick=\"return confirm('Place applicant on short list?')\" value='Shortlist'>";
+			echo "</form>";
 		} else {
-			echo "Responded";
+			if ($appresponse  !== "") echo "Responded";
+			if ($appshortlist !== "") {
+				echo "<form style='display: inline;' action='$user_type.php?p=$p' method='post' name='formremoveshortlist'>";
+				echo "<input type='hidden' name='action' value='app_removeshortlist'>";
+				echo "<input type='hidden' name='p' value='$p'>";
+				echo "<input type='hidden' name='c' value='$user'>";
+				echo "<input type='hidden' name='a' value='$user'>";
+				echo "<input type='hidden' name='h' value='$h'>";
+				echo "<input type='hidden' name='v' value='Y'>";
+				echo "<input type='submit' style='background-color:darkorange; color:white;' onclick=\"return confirm('Remove applicant from short list?')\" value='Remove from shortlist'>";
+				echo "</form>";
+			}
 		}
 
 

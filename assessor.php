@@ -9,6 +9,12 @@ function get_page($p, $a, $msg = "", $error = "") {
 	$assemail  = get_assemail( $p, $a); 
 	$assstatus = get_assstatus( $p, $a); 
 
+	echo "<head>";
+	echo "<link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>";
+	echo "<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.js'></script>";
+	echo "<script type='text/javascript' src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>";
+	echo "</head>";
+	echo "<body>";
 
 	if ($assstatus == "observer") {
 		echo "<h2> Welcome $assname, you will be able to observe the applicants </h2>\n";
@@ -24,7 +30,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	}
 
 	if (($assstatus == "chairman")or($assstatus == "observer")) {
-		$status = get_jobstatus($p);
+		$status = get_jobcondition($p);
 		if ( $status == "open" ) {
 			echo "Status: <font color=green> Open </font> \n";
 			echo "<form style='display: inline;' action='assessor.php?a=$a' method='post' name='formcloseposition'>";
@@ -58,11 +64,12 @@ function get_page($p, $a, $msg = "", $error = "") {
 
 	$applicants = get_applicants($p);
 	$applicants = explode( "\n", $applicants );
-	echo "<table style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
-	echo "<tr style='border: 1px solid lightgray; padding:10px;'><th align=right>#</th><th>Applicants</th><th>Referees</th>";
+	echo "<table id='applicants' style='border: 1px solid lightgray; border-collapse: collapse;'>\n";
+	echo "<thead><tr style='border: 1px solid lightgray; padding:10px;'><th align=right>#</th><th>Applicants</th><th>Referees</th>";
 	if ($assstatus != "observer") 
 		echo "<th align=center>Qualifies ?<br><font color=green>Yes</font> / <font color=orange>Maybe</font> / <font color=red>No</font></th>";
-	echo "</tr>\n";
+	echo "</tr></thead>\n";
+	echo "<tbody>\n";
 
 	$counter=1;
 	foreach ($applicants as $appemail) {
@@ -146,7 +153,16 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "</tr>";
 		$counter++;
 	}
+	echo "</tbody>";
 	echo "</table>";
+	echo '<script type="text/javascript">
+		$(document).ready(function() {
+			$("#applicants").DataTable({
+				"paging": false,
+				"order": [ [2, "desc"] ],
+			});
+		} );
+		</script>';
 	echo "<br>";
 	echo "<br>";
 	echo "<br>";
@@ -201,6 +217,30 @@ function get_page($p, $a, $msg = "", $error = "") {
 		}
 		echo "</ul>";
 		echo "</div>";
+
+
+		$jobtitle = get_jobtitle($p);
+		$jobdesc  = get_jobdesc($p);
+		$jobdue   = get_jobdue($p);
+
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='assessor.php?a=$a' method='post' name='formupdatedesc'>";
+		echo "Description <textarea rows='6' cols='50' name='jobdesc'>$jobdesc</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatedescposition'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='assessor.php?a=$a' method='post' name='formupdatedue'>";
+		echo "Due date <input type='text' name='jobdue' maxlength='12' value='$jobdue'>\n";
+		echo "<input type='hidden' name='action' value='updatedueposition'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
 	}
 
 	echo "<hr>\n";
@@ -247,6 +287,32 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			$error="";
 			break;
 
+		case "updatedescposition" :
+		        $jobdesc      = $_POST['jobdesc'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			# TODO: test if assessor is chairman
+			$fh = fopen(file_jobdesc($p), 'w+') or die("can't open file for job description");
+			fwrite($fh, $jobdesc);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " description updated";
+			$error="";
+			break;
+
+		case "updatedueposition" :
+		        $jobdue      = $_POST['jobdue'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			# TODO: test if assessor is chairman
+			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
+			fwrite($fh, $jobdue);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " due date updated";
+			$error="";
+			break;
+
 		case "app_qualifies":
 		        $h = $_POST['h'];
 		        $v = $_POST['v'];
@@ -267,21 +333,86 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 		case "app_response" :
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
+			
+			
+			$appshortlist = get_appshortlist($p, $h);
+			if ($appshortlist == "") {
 
-			$jobtitle = get_jobtitle($p);
-			$appname  = get_appname($p, $h );
-			$appemail = get_appemail($p, $h );
-		
-			mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
+				$jobtitle = get_jobtitle($p);
+				$appname  = get_appname($p, $h );
+				$appemail = get_appemail($p, $h );
+			
+				mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
 
-			$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
-			fwrite($fh, $a);
-			fclose($fh);
+				$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
+				fwrite($fh, $a);
+				fclose($fh);
+
+				$msg="Response sent to applicant";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant is in shortlist";
+			}
 
 			get_results_page($p, $a, "assessor");
 
 			$do_page=false;
 			break;
+
+		case "app_shortlist" :
+		        $h = $_POST['h'];
+			valid_p_h($p, $h) or die("Invalid Applicant");
+
+			# No email sent when placed on shortlist
+
+			$appresponse  = get_appresponse($p, $h);
+			if ($appresponse == "") {
+
+				$fh = fopen(file_appshortlist($p, $h), 'w+') or die("Can't open shortlist file");
+				fwrite($fh, $a);
+				fclose($fh);
+
+				$msg="Applicant added to shortlist";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant has already received a response";
+			}
+
+			get_results_page($p, $a, "assessor");
+
+			$do_page=false;
+			break;
+
+		case "app_removeshortlist" :
+		        $p = $_POST['p'];
+		        $h = $_POST['h'];
+			valid_p_h($p, $h) or die("Invalid Applicant");
+
+			# No email sent when placed on shortlist
+
+			$appresponse  = get_appresponse($p, $h);
+			if ($appresponse == "") {
+
+				$fh = fopen(file_appshortlist($p, $h), 'w+') or die("Can't open shortlist file");
+				fclose($fh);
+
+				$msg="Applicant removed from shortlist";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant has already received a response";
+			}
+
+			get_results_page($p, $a, "assessor");
+
+			$do_page=false;
+			break;
+
 
 		case "app_reminder" :
 		        $h = $_POST['h'];

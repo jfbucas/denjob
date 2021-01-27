@@ -8,7 +8,7 @@ function get_page($p, $h, $msg = "", $error = "") {
 	$appname  = get_appname($p, $h );
 	$appemail = get_appemail($p, $h );
 		
-	$status = get_jobstatus($p);
+	$status = get_jobcondition($p);
 	if ( ! $status ) {
 		echo "<h2>Welcome $appname, the position is now closed </h2>\n";
 		return;
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 	valid_p_h($p, $h) or die("Invalid URL POST - check php.ini : post_max_size");
 
 	$action = "";
-	$status = get_jobstatus($p);
+	$status = get_jobcondition($p);
 	if ( $status ) {
 	        $action = $_POST['action'];
 	}
@@ -154,6 +154,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$msg="";
 				$error="CV couldn't be uploaded";
 			}			
+			if (! is_pdf( file_apppdf($p, $h) ) ) {
+				$msg="";
+				$error="CV was not in PDF format";
+			}
+			# TODO - send email to applicant for confirmation
 			break;
 		case "add_referee" :
 

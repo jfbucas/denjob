@@ -1,7 +1,7 @@
 <?php
 
 $SOFTWARE = "Denjob";
-$VERSION = "v0.1";
+$VERSION = "v0.4";
 $DESCRIPTION = "Position application web interface.";
 $COPYRIGHT = "$SOFTWARE $VERSION ; $DESCRIPTION";
 
@@ -13,6 +13,11 @@ $CFG_POSITIONS_DIR = "positions";
 
 # The URL sent by email
 $URL="https://jobs.institut.ion";
+
+
+# GDPR
+$GDPR_MESSAGE = "<a href='Link to notice'>GDPR notice for job applicants</a>";
+
 
 # The sender email address
 $FROM_EMAIL="Institute administrator <administrator@institut.ion>";
@@ -26,57 +31,90 @@ $EMAIL_SUBJECT = "Institution Name";
 $EMAIL_HEADER = "From: $FROM_EMAIL\n";
 
 # To Applicant
-$APP_SUBJECT = "$EMAIL_SUBJECT - application link";
+$APP_SUBJECT = "%subject - application link";
 $APP_MAIN = <<<EOM
 Dear %appname,
 
-thanks you for applying to the position %jobtitle, please click on this link to continue with your application
-$URL/applicant.php?p=%p&h=%h
+thank you for applying to the position %jobtitle
+
+Please click on this link to continue with your application:
+%url/applicant.php?p=%p&h=%h
 
 All the best,
-Administrator
+%signature
+EOM;
+
+# To Unsuccessful Applicant
+$RESPONSE_SUBJECT = "%subject - Response";
+$RESPONSE_MAIN = <<<EOM
+Dear %appname,
+
+Thank you for your application.
+
+Thank you for your application for the position of %jobtitle.  We received a large number of very strong applications for this one post and it took longer than anticipated to review all the applications.  I regret to inform you that your application was not successful on this occasion.
+
+We wish you the very best with your future career and  would  welcome an application from you in the future for any relevant advertised vacancies.
+
+All the best,
+%signature
+EOM;
+
+# To Forgetful Applicant
+$REMINDER_SUBJECT = "%subject - Reminder";
+$REMINDER_MAIN = <<<EOM
+Dear %appname,
+
+Thank you for your interest in the position %jobtitle.
+
+Please note that your application is still not finalized as a few required documents are still missing.
+
+Please click on this link to review your details:
+%url/applicant.php?p=%p&h=%h
+
+All the best,
+%signature
 EOM;
 
 # To Referee
-$REF_SUBJECT = "$EMAIL_SUBJECT - Applicant cover letter request";
+$REF_SUBJECT = "%subject - Applicant reference letter request";
 $REF_MAIN = <<<EOM
 Dear %refname,
 
-%appname (%appemail) is applying to the position %jobtitle (see: $URL). He/She has nominated you as referee.
+%appname (%appemail) is applying to the position %jobtitle (see: %url). He/She has nominated you as referee.
 
-Please upload a PDF cover letter using the following link:
-$URL/referee.php?p=%p&h=%h&rh=%rh
+Please upload a PDF reference letter using the following link:
+%url/referee.php?p=%p&h=%h&rh=%rh
 
 All the best,
-Administrator
+%signature
 EOM;
 
 
 # To Assessor
-$ASS_SUBJECTt = "$EMAIL_SUBJECT - assessor for open position request";
+$ASS_SUBJECT = "%subject - assessor for open position request";
 $ASS_MAIN = <<<EOM
 Dear %assname,
 
 you were nominated to be an assessor.
 
 Please review the applicants for %jobtitle here:
-$URL/assessor.php?p=%p&a=%a
+%url/assessor.php?p=%p&a=%a
 
 All the best,
-Administrator
+%signature
 EOM;
 
 
 # To Chairman/admin
-$CHAIR_SUBJECT = "$EMAIL_SUBJECT - admin link";
-$CHAIR_MAIN  = <<<EOM
-Dear Chairman,
+$ADMIN_SUBJECT = "%subject - admin link";
+$ADMIN_MAIN = <<<EOM
+Dear Job Administrator,
 
 Please manage the job offers here:
-$URL/chairman.php?c=%c
+%url/admin.php?c=%c
 
 All the best,
-Administrator
+%signature
 EOM;
 
 ?>

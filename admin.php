@@ -5,6 +5,18 @@ $msg = "";
 $error = "";
 
 function get_page($c, $msg = "", $error = "") {
+	get_js_toggle();	
+	echo "<script src='https://code.jquery.com/jquery-1.11.3.js'></script>";
+
+	echo '<script language="javascript" src="jquery-ui.js"></script>';
+	echo '<link href="jquery-ui.css" rel="stylesheet" type="text/css">';
+
+	echo '<script language="javascript"> $(function() { $( ".date" ).datepicker( { "dateFormat": "yy-mm-dd" } ); }); </script>';
+	echo "<style>";
+	echo ".job     { border-style: groove;  }";
+	echo ".visible { display: block; }";
+	echo "</style>";
+	echo "";
 	echo "<h2>Welcome Admin, you will be able to manage the assessors for each positions below </h2>\n";
 
 	if ($msg != "") {
@@ -19,6 +31,7 @@ function get_page($c, $msg = "", $error = "") {
 	echo "<h5> Add a position </h5>\n";
 	echo "<form action='admin.php?c=$c' method='post' name='formaddpos'>\n";
 	echo "Job Title <input type='text' name='jobtitle' maxlength='80' value=''><br>\n";
+	echo "Due date <input type='text' name='jobdue' maxlength='12' value='".date("Y-m-d"). "' class='date'><br>\n";
 	echo "Description <textarea rows='6' cols='50' name='jobdesc'></textarea><br>\n";
 	echo "<input type='hidden' name='c' value='$c'>";
 	echo '<input type="hidden" name="action" value="addposition">';
@@ -32,20 +45,25 @@ function get_page($c, $msg = "", $error = "") {
 	echo "</select><br>\n";
 	echo "<input type='submit' value='Add'>";
 	echo "</form>";
-	echo "<hr>";
+
 
 	$positions = array_reverse(scandir(file_positionsdir()));
 	foreach ($positions as $p) {
 		if ( !is_numeric($p) ) continue;
+		echo "<div id='job$p' class='job'>";
+		echo "<a name='job$p'/>";
 
 		$jobtitle = get_jobtitle($p);
 		$jobdesc  = get_jobdesc($p);
-		echo "<h4>" . $jobtitle . "</h3>\n";
+		$jobdue   = get_jobdue($p);
+		$jobrefnumber = get_jobrefnumber($p);
+		echo "<h4 onclick='toggle(\"jobinfo$p\");'><a href='#job$p'>" . $jobtitle . " due on " . $jobdue . "</a></h4>\n";
+		echo "<div id='jobinfo$p' class='hide'>";
 
-		$status = get_jobstatus($p);
+		$status = get_jobcondition($p);
 		if ( $status == "open" ) {
 			echo "Status: <font color=green> Open </font> \n";
-			echo "<form style='display: inline;' action='admin.php?c=$c' method='post' name='formcloseposition'>";
+			echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formcloseposition'>";
 			echo "<input type='hidden' name='action' value='closeposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -53,7 +71,7 @@ function get_page($c, $msg = "", $error = "") {
 			echo "</form>";
 		} else {
 			echo "Status: <font color=red> Closed </font> \n";
-			echo "<form style='display: inline;' action='admin.php?c=$c' method='post' name='formopenposition'>";
+			echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formopenposition'>";
 			echo "<input type='hidden' name='action' value='openposition'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -62,10 +80,55 @@ function get_page($c, $msg = "", $error = "") {
 		}
 		echo "<br>";
 		echo "<br>";
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatedesc'>";
+		echo "Description <textarea rows='6' cols='50' name='jobdesc'>$jobdesc</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatedescposition'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
 	
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatedue'>";
+		echo "Due date <input type='text' name='jobdue' maxlength='12' value='$jobdue' class='date'>\n";
+		echo "<input type='hidden' name='action' value='updatedueposition'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdaterefnumber'>";
+		echo "Minimum number of referees required: <select name='jobrefnumber'>\n";
+		for ($i = 0; $i<=5; $i++)
+			echo "<option value='$i' ".(($i==$jobrefnumber)?"selected":"").">$i</option>\n";
+		echo "</select>\n";
+		echo "<input type='hidden' name='action' value='updaterefnumber'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdaterefearly'>";
+		echo "Get referees letters early in the process: <select name='jobrefearly'>\n";
+		for ($i = 0; $i<=1; $i++)
+			echo "<option value='$i' ".(($i==$jobrefearly)?"selected":"").">".($i=="0"?"Off":"On"). "</option>\n";
+		echo "</select>\n";
+		echo "<input type='hidden' name='action' value='updaterefearly'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+	
+		echo "<br>";
+		echo "<br>";
 		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
 		echo "<h5> Add an assessor </h5>\n";
-		echo "<form action='admin.php?c=$c' method='post' name='formaddass'>\n";
+		echo "<form action='admin.php?c=$c#job$p' method='post' name='formaddass'>\n";
 		echo "Name <input type='text' name='assname' maxlength='50' value=''><br>\n";
 		echo "Email <input type='email' name='assemail' maxlength='50' value=''><br>\n";
 		echo "Role: <select name='assstatus'>\n";
@@ -93,7 +156,7 @@ function get_page($c, $msg = "", $error = "") {
 			$assname   = get_assname($p, $a);
 			$assstatus = get_assstatus($p, $a);
 			echo "<li>  $assname ($assemail)  <font color='blue'>$assstatus</font> ";
-			echo "<form action='admin.php?c=$c' method='post' name='formdelass' style='display: inline;'>";
+			echo "<form action='admin.php?c=$c#job$p' method='post' name='formdelass' style='display: inline;'>";
 			echo "<input type='hidden' name='action' value='del_assessor'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
@@ -105,14 +168,80 @@ function get_page($c, $msg = "", $error = "") {
 		echo "</ul>";
 		echo "</div>";
 		echo "<br>";
-		echo "<form action='admin.php?c=$c' method='post' name='formresults'>";
+		echo "<form action='admin.php?c=$c#job$p' method='post' name='formresults'>";
 		echo "<input type='hidden' name='action' value='results'>";
 		echo "<input type='hidden' name='c' value='$c'>";
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='submit' value='View results'>";
 		echo "</form>";
-		echo "<hr>";
+
+		echo "<br>";
+		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
+		echo "<h3>Template for emails</h3>";
+
+		$templateapplicant = get_template_applicant($p);
+		$templateresponse  = get_template_response($p);
+		$templatereminder  = get_template_reminder($p);
+		$templateref       = get_template_ref($p);
+		$templateass       = get_template_ass($p);
+
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatetemplateapplicant'>";
+		echo "Template Email for Applicants <textarea rows='6' cols='50' name='templateapplicant'>$templateapplicant</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatetemplateapplicant'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatetemplateresponse'>";
+		echo "Template Email for Response <textarea rows='6' cols='50' name='templateresponse'>$templateresponse</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatetemplateresponse'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatetemplatereminder'>";
+		echo "Template Email for Reminder <textarea rows='6' cols='50' name='templatereminder'>$templatereminder</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatetemplatereminder'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatetemplateref'>";
+		echo "Template Email for Referees <textarea rows='6' cols='50' name='templateref'>$templateref</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatetemplateref'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+
+		echo "<form style='display: inline;' action='admin.php?c=$c#job$p' method='post' name='formupdatetemplateass'>";
+		echo "Template Email for Assessors <textarea rows='6' cols='50' name='templateass'>$templateass</textarea>\n";
+		echo "<input type='hidden' name='action' value='updatetemplateass'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='c' value='$c'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
+		echo "<br>";
+		echo "</div>";
+		echo "</div>";
+		echo "</div>";
 	}
+
+
+
+	echo "<script>";
+	echo "var v = window.location.hash.slice(1);";
+	echo "var w = v.replace('job', 'jobinfo');";
+	echo "console.log(v,w);";
+	echo "toggle(w);";
+	echo "</script>";
 }
 
 
@@ -181,10 +310,102 @@ if ( isset($argv) ){
 			$error="";
 			break;
 
+		case "updatedescposition" :
+		        $jobdesc      = $_POST['jobdesc'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			$fh = fopen(file_jobdesc($p), 'w+') or die("can't open file for job description");
+			fwrite($fh, $jobdesc);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " description updated";
+			$error="";
+			break;
+		case "updatedueposition" :
+		        $jobdue      = $_POST['jobdue'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
+			fwrite($fh, $jobdue);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " due date updated";
+			$error="";
+			break;
+		case "updaterefnumber" :
+		        $jobrefnumber      = $_POST['jobrefnumber'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			$fh = fopen(file_jobrefnumber($p), 'w+') or die("can't open file for job ref number");
+			fwrite($fh, $jobrefnumber);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " ref number updated";
+			$error="";
+			break;
+		case "updaterefearly" :
+		        $jobrefearly      = $_POST['jobrefearly'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			$fh = fopen(file_jobrefearly($p), 'w+') or die("can't open file for job ref early");
+			fwrite($fh, $jobrefearly);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " ref number updated";
+			$error="";
+			break;
+		case "updatetemplateapplicant" :
+		        $templateapplicant     = $_POST['templateapplicant'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_applicant($p, $templateapplicant);
+
+			$msg="Position ". get_jobtitle($p). " template applicant updated";
+			$error="";
+			break;
+		case "updatetemplateresponse" :
+		        $templateresponse     = $_POST['templateresponse'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_response($p, $templateresponse);
+
+			$msg="Position ". get_jobtitle($p). " template response updated";
+			$error="";
+			break;
+		case "updatetemplatereminder" :
+		        $templatereminder     = $_POST['templatereminder'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_reminder($p, $templatereminder);
+
+			$msg="Position ". get_jobtitle($p). " template reminder updated";
+			$error="";
+			break;
+		case "updatetemplateref" :
+		        $templateref     = $_POST['templateref'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_ref($p, $templateref);
+
+			$msg="Position ". get_jobtitle($p). " template ref updated";
+			$error="";
+			break;
+		case "updatetemplateass" :
+		        $templateass     = $_POST['templateass'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_ass($p, $templateass);
+
+			$msg="Position ". get_jobtitle($p). " template ass updated";
+			$error="";
+			break;
+
 		case "addposition" :
 		        $jobtitle     = $_POST['jobtitle'];
 		        $jobdesc      = $_POST['jobdesc'];
+		        $jobdue       = $_POST['jobdue'];
 		        $jobrefnumber = $_POST['jobrefnumber'];
+		        $jobrefearly  = "0";
 			# TODO: Validate admin input
 
 			$p = time();
@@ -199,8 +420,16 @@ if ( isset($argv) ){
 			fwrite($fh, $jobdesc);
 			fclose($fh);
 
+			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
+			fwrite($fh, $jobdue);
+			fclose($fh);
+
 			$fh = fopen(file_jobrefnumber($p), 'w+') or die("can't open file for job referee number");
 			fwrite($fh, $jobrefnumber);
+			fclose($fh);
+
+			$fh = fopen(file_jobrefearly($p), 'w+') or die("can't open file for job referee early");
+			fwrite($fh, $jobrefearly);
 			fclose($fh);
 
 			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file for job status");
@@ -297,21 +526,87 @@ if ( isset($argv) ){
 		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
+			
+			
+			$appshortlist = get_appshortlist($p, $h);
+			if ($appshortlist == "") {
 
-			$jobtitle = get_jobtitle($p);
-			$appname  = get_appname($p, $h );
-			$appemail = get_appemail($p, $h );
-		
-			mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
+				$jobtitle = get_jobtitle($p);
+				$appname  = get_appname($p, $h );
+				$appemail = get_appemail($p, $h );
+			
+				mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
 
-			$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
-			fwrite($fh, $c);
-			fclose($fh);
+				$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
+				fwrite($fh, $c);
+				fclose($fh);
+
+				$msg="Response sent to applicant";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant is in shortlist";
+			}
 
 			get_results_page($p, $c, "admin");
 
 			$do_page=false;
 			break;
+
+		case "app_shortlist" :
+		        $p = $_POST['p'];
+		        $h = $_POST['h'];
+			valid_p_h($p, $h) or die("Invalid Applicant");
+
+			# No email sent when placed on shortlist
+
+			$appresponse  = get_appresponse($p, $h);
+			if ($appresponse == "") {
+
+				$fh = fopen(file_appshortlist($p, $h), 'w+') or die("Can't open shortlist file");
+				fwrite($fh, $c);
+				fclose($fh);
+
+				$msg="Applicant added to shortlist";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant has already received a response";
+			}
+
+			get_results_page($p, $c, "admin");
+
+			$do_page=false;
+			break;
+
+		case "app_removeshortlist" :
+		        $p = $_POST['p'];
+		        $h = $_POST['h'];
+			valid_p_h($p, $h) or die("Invalid Applicant");
+
+			# No email sent when placed on shortlist
+
+			$appresponse  = get_appresponse($p, $h);
+			if ($appresponse == "") {
+
+				$fh = fopen(file_appshortlist($p, $h), 'w+') or die("Can't open shortlist file");
+				fclose($fh);
+
+				$msg="Applicant removed from shortlist";
+				$error="";
+
+			} else {
+				$msg="";
+				$error="Applicant has already received a response";
+			}
+
+			get_results_page($p, $c, "admin");
+
+			$do_page=false;
+			break;
+
 
 		case "app_reminder" :
 		        $p = $_POST['p'];

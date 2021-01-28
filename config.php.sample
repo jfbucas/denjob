@@ -38,7 +38,7 @@ $EMAIL_SUBJECT_PREFIX = "[$COMPANY] Job application";
 $EMAIL_HEADER = "From: %from\n";
 
 # To Applicant
-$APP_SUBJECT = "%subject - application link";
+$APP_SUBJECT = "%subject - Application link";
 $APP_MAIN = <<<EOM
 Dear %appname,
 
@@ -52,7 +52,7 @@ All the best,
 EOM;
 
 # To Applicant after the PDF file is uploaded
-$UPLOADED_SUBJECT = "%subject - Application uploaded, please check";
+$UPLOADED_SUBJECT = "%subject - Application uploaded";
 $UPLOADED_MAIN = <<<EOM
 Dear %appname,
 

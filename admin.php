@@ -185,6 +185,14 @@ function get_page($c, $msg = "", $error = "") {
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='submit' value='View results'>";
 		echo "</form>";
+		echo "<br>";
+	
+		if (file_exists(file_jobmonitoringnationality($p))) {
+			echo "<a href='".file_jobmonitoringnationality($p)."' target=blank>Nationality statistics</a><br>\n";
+		}
+		if (file_exists(file_jobmonitoringgender($p))) {
+			echo "<a href='".file_jobmonitoringgender($p)."' target=blank>Gender statistics</a><br>\n";
+		}
 
 		echo "<br>";
 		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";

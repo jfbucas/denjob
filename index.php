@@ -9,14 +9,14 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 
 	global $COPYRIGHT, $GDPR_MESSAGE;
 
-	echo "<a href=index.php><img src=sitelogo.png></a>\n";
+	echo "<a href=index.php><img width=250px src=sitelogo.svg></a>\n";
 	#echo "<h1> $COMPANY </h1>\n";
 
 	if ($msg != "") {
-		echo "<h1> <font color=green><i>$msg</i></font> </h1>"; exit ;
+		echo "<h4> <font color=green><i>$msg</i></font> </h4>"; exit ;
 	}
 	if ($error != "") {
-		echo "<h1> <font color=red><i>$error</i></font> </h1>"; exit ;
+		echo "<h4> <font color=red><i>$error</i></font> </h4>"; exit ;
 	}
 
 	if ($only_p == "")
@@ -41,7 +41,7 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 			if ($only_p != "") {
 #				echo "<br><br>\n";
 #н				echo "<b>To start the application process, please fill the following</b>:\n <br>";
-				echo "<b><i>To start the application process, please enter your details below. You will then be sent a link where you can upload your application. Please note that once you enter your details below your name will appear on the job application system as a prospective candidate up until the closing date. If you haven’t uploaded an application by the closing date, your details will be deleted from the system.</i></b>\n <br>";
+				echo "<b><i>To start the application process, please enter your details below. You will then be sent a link where you can upload your application. Please note that once you enter your details below your name will appear on the job application system as a prospective candidate up until the closing date. If you haven’t uploaded an application by the closing date, your details will be deleted from the system.</i></b><br><br>\n";
 				echo "<form action='index.php' method='post' name='form".$p."'>\n";
 				echo "Name <input type='text' name='appname' maxlength='50' value=''><br>\n";
 				echo "Email <input type='email' name='appemail' maxlength='50' value=''><br>\n";
@@ -129,7 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 		fwrite($fh, $appemail);
 		fclose($fh);
 
-#		$msg="Thank you $appname for considering an application to $jobtitle, please check your email ($appemail) for a link to continue with your application.";
 		$msg="Thank you for your interest in the position of $jobtitle Please check your email ($appemail) for a link to submit your application.";
 	}else{
 		$error="Application link already sent to $appemail , sending it again now.";

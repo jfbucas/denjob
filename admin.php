@@ -303,151 +303,22 @@ if ( isset($argv) ){
 	get_page($c);
 
 } else if ($_SERVER['REQUEST_METHOD'] == "POST") {
+	$do_page = true;
+
         $c = $_POST['c'];
 	valid_c($c) or die("Invalid Admin URL");
 
-	$do_page = true;
-
         $action = $_POST['action'];
+
+	# Validate p (except for addposition)
 	switch ($action) {
-
-		case "closeposition":
+		case "addposition" : break;
+		default :
 		        $p = $_POST['p'];
 			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobstatus($p), 'w+');
-			fwrite($fh, "close");
-			fclose($fh);
-			$msg="Position ". get_jobtitle($p). " closed";
-			$error="";
-			break;
-
-		case "openposition":
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file");
-			fwrite($fh, "open");
-			fclose($fh);
-			$msg="Position ". get_jobtitle($p). " open";
-			$error="";
-			break;
-
-		case "updatedescposition" :
-		        $jobdesc      = $_POST['jobdesc'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobdesc($p), 'w+') or die("can't open file for job description");
-			fwrite($fh, $jobdesc);
-			fclose($fh);
-
-			$msg="Position ". get_jobtitle($p). " description updated";
-			$error="";
-			break;
-
-		case "updatedueposition" :
-		        $jobdue      = $_POST['jobdue'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
-			fwrite($fh, $jobdue);
-			fclose($fh);
-			$msg="Position ". get_jobtitle($p). " due date updated";
-			$error="";
-			break;
-
-		case "updaterefnumber" :
-		        $jobrefnumber      = $_POST['jobrefnumber'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobrefnumber($p), 'w+') or die("can't open file for job ref number");
-			fwrite($fh, $jobrefnumber);
-			fclose($fh);
-			$msg="Position ". get_jobtitle($p). " ref number updated";
-			$error="";
-			break;
-
-		case "updaterefearly" :
-		        $jobrefearly      = $_POST['jobrefearly'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$fh = fopen(file_jobrefearly($p), 'w+') or die("can't open file for job ref early");
-			fwrite($fh, $jobrefearly);
-			fclose($fh);
-			$msg="Position ". get_jobtitle($p). " ref number updated";
-			$error="";
-			break;
-
-		case "updatetemplateapplicant" :
-		        $templateapplicant     = $_POST['templateapplicant'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_applicant($p, $templateapplicant);
-			$msg="Position ". get_jobtitle($p). " template applicant updated";
-			$error="";
-			break;
-
-		case "updatetemplateuploaded" :
-		        $templateuploaded     = $_POST['templateuploaded'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_uploaded($p, $templateuploaded);
-			$msg="Position ". get_jobtitle($p). " template uploaded updated";
-			$error="";
-			break;
-
-		case "updatetemplateresponse" :
-		        $templateresponse     = $_POST['templateresponse'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_response($p, $templateresponse);
-			$msg="Position ". get_jobtitle($p). " template response updated";
-			$error="";
-			break;
-
-		case "updatetemplatereminder" :
-		        $templatereminder     = $_POST['templatereminder'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_reminder($p, $templatereminder);
-			$msg="Position ". get_jobtitle($p). " template reminder updated";
-			$error="";
-			break;
-
-		case "updatetemplateref" :
-		        $templateref     = $_POST['templateref'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_ref($p, $templateref);
-			$msg="Position ". get_jobtitle($p). " template ref updated";
-			$error="";
-			break;
-
-		case "updatetemplateass" :
-		        $templateass     = $_POST['templateass'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			set_template_ass($p, $templateass);
-			$msg="Position ". get_jobtitle($p). " template ass updated";
-			$error="";
-			break;
-
-		case "deletenonapplicantsposition":
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-			$msg="";
-			$error="";
-			$applicants = get_applicants($p);
-			$applicants = explode( "\n", $applicants );
-			foreach ($applicants as $appemail) {
-				$h=do_hash($appemail);
-				if (!valid_p_h( $p, $h )) continue;
-				if (!file_exists(file_apppdf($p, $h))) {
-					$appname = get_appname($p, $h);
-					$msg .= "<br>Applicant $appname deleted";
-					rrmdir(file_appdir($p, $h));
-				}
-			}
-			break;
-
+	}
+	
+	switch ($action) {
 		case "addposition" :
 		        $jobtitle     = $_POST['jobtitle'];
 		        $jobdesc      = $_POST['jobdesc'];
@@ -488,10 +359,120 @@ if ( isset($argv) ){
 			$error="";
 			break;
 
-		case "add_assessor" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL $p");
+		case "closeposition":
+			$fh = fopen(file_jobstatus($p), 'w+');
+			fwrite($fh, "close");
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " closed";
+			$error="";
+			break;
 
+		case "openposition":
+			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file");
+			fwrite($fh, "open");
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " open";
+			$error="";
+			break;
+
+		case "updatedescposition" :
+		        $jobdesc      = $_POST['jobdesc'];
+			$fh = fopen(file_jobdesc($p), 'w+') or die("can't open file for job description");
+			fwrite($fh, $jobdesc);
+			fclose($fh);
+
+			$msg="Position ". get_jobtitle($p). " description updated";
+			$error="";
+			break;
+
+		case "updatedueposition" :
+		        $jobdue      = $_POST['jobdue'];
+			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
+			fwrite($fh, $jobdue);
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " due date updated";
+			$error="";
+			break;
+
+		case "updaterefnumber" :
+		        $jobrefnumber      = $_POST['jobrefnumber'];
+			$fh = fopen(file_jobrefnumber($p), 'w+') or die("can't open file for job ref number");
+			fwrite($fh, $jobrefnumber);
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " ref number updated";
+			$error="";
+			break;
+
+		case "updaterefearly" :
+		        $jobrefearly      = $_POST['jobrefearly'];
+			$fh = fopen(file_jobrefearly($p), 'w+') or die("can't open file for job ref early");
+			fwrite($fh, $jobrefearly);
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " ref early referee updated";
+			$error="";
+			break;
+
+		case "updatetemplateapplicant" :
+		        $templateapplicant     = $_POST['templateapplicant'];
+			set_template_applicant($p, $templateapplicant);
+			$msg="Position ". get_jobtitle($p). " template applicant updated";
+			$error="";
+			break;
+
+		case "updatetemplateuploaded" :
+		        $templateuploaded     = $_POST['templateuploaded'];
+			set_template_uploaded($p, $templateuploaded);
+			$msg="Position ". get_jobtitle($p). " template uploaded updated";
+			$error="";
+			break;
+
+		case "updatetemplateresponse" :
+		        $templateresponse     = $_POST['templateresponse'];
+			set_template_response($p, $templateresponse);
+			$msg="Position ". get_jobtitle($p). " template response updated";
+			$error="";
+			break;
+
+		case "updatetemplatereminder" :
+		        $templatereminder     = $_POST['templatereminder'];
+			set_template_reminder($p, $templatereminder);
+			$msg="Position ". get_jobtitle($p). " template reminder updated";
+			$error="";
+			break;
+
+		case "updatetemplateref" :
+		        $templateref     = $_POST['templateref'];
+			set_template_ref($p, $templateref);
+			$msg="Position ". get_jobtitle($p). " template ref updated";
+			$error="";
+			break;
+
+		case "updatetemplateass" :
+		        $templateass     = $_POST['templateass'];
+		        $p = $_POST['p'];
+			valid_p($p) or die("Invalid Admin Position URL");
+			set_template_ass($p, $templateass);
+			$msg="Position ". get_jobtitle($p). " template ass updated";
+			$error="";
+			break;
+
+		case "deletenonapplicantsposition":
+			$msg="";
+			$error="";
+			$applicants = get_applicants($p);
+			$applicants = explode( "\n", $applicants );
+			foreach ($applicants as $appemail) {
+				$h=do_hash($appemail);
+				if (!valid_p_h( $p, $h )) continue;
+				if (!file_exists(file_apppdf($p, $h))) {
+					$appname = get_appname($p, $h);
+					$msg .= "<br>Applicant $appname deleted";
+					rrmdir(file_appdir($p, $h));
+				}
+			}
+			break;
+
+		case "add_assessor" :
 		        $assname   = filter_var($_POST['assname'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW|FILTER_FLAG_ENCODE_AMP );
 		        $assemail  = $_POST['assemail'];
 		        $assstatus = $_POST['assstatus'];
@@ -524,9 +505,6 @@ if ( isset($argv) ){
 			break;
 
 		case "sendassmail" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-
 		        $a  = $_POST['a'];
 			valid_p_a($p, $a) or die("Invalid URL");
 
@@ -536,9 +514,6 @@ if ( isset($argv) ){
 			break;
 
 		case "del_assessor" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-
 		        $a  = $_POST['a'];
 			valid_p_a($p, $a) or die("Invalid URL");
 
@@ -566,15 +541,11 @@ if ( isset($argv) ){
 			break;
 
 		case "results" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
-
 			get_results_page($p, $c, "admin" );
 			$do_page=false;
 			break;
 
 		case "app_response" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
 			
@@ -600,13 +571,46 @@ if ( isset($argv) ){
 				$error="Applicant is in shortlist";
 			}
 
-			get_results_page($p, $c, "admin");
+			get_results_page($p, $c, "admin", $msg, $error);
 
 			$do_page=false;
 			break;
 
+		case "app_massresponse" :
+			$msg="";
+			$error="";
+			$applicants = get_applicants($p);
+			$applicants = explode( "\n", $applicants );
+			foreach ($applicants as $appemail) {
+				$h=do_hash($appemail);
+				if (!valid_p_h( $p, $h )) continue;
+
+				$appresponse  = get_appresponse($p, $h);
+				$appshortlist = get_appshortlist($p, $h);
+				if (($appresponse == "") &&  ($appshortlist == "")) {
+
+					$jobtitle = get_jobtitle($p);
+					$appname  = get_appname($p, $h );
+					$appemail = get_appemail($p, $h );
+			
+					mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
+
+					$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
+					fwrite($fh, $a);
+					fclose($fh);
+
+					$msg .= "<br>Response sent to Applicant $appname";
+					$error="";
+				}
+			}
+
+			get_results_page($p, $a, "assessor", $msg, $error);
+
+			$do_page=false;
+			break;
+
+
 		case "app_shortlist" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
 
@@ -627,13 +631,12 @@ if ( isset($argv) ){
 				$error="Applicant has already received a response";
 			}
 
-			get_results_page($p, $c, "admin");
+			get_results_page($p, $c, "admin", $msg, $error);
 
 			$do_page=false;
 			break;
 
 		case "app_removeshortlist" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
 
@@ -653,14 +656,12 @@ if ( isset($argv) ){
 				$error="Applicant has already received a response";
 			}
 
-			get_results_page($p, $c, "admin");
+			get_results_page($p, $c, "admin", $msg, $error);
 
 			$do_page=false;
 			break;
 
-
 		case "app_reminder" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
 
@@ -670,7 +671,7 @@ if ( isset($argv) ){
 		
 			mail_applicant_reminder($appname, $appemail, $jobtitle, $p, $h);
 
-			get_results_page($p, $c, "admin");
+			get_results_page($p, $c, "admin", $msg, $error);
 
 			$do_page=false;
 			break;

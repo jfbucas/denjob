@@ -17,7 +17,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 	echo "<body>";
 
 	if ($assstatus == "coordinator") {
-		echo "<h2> Welcome $assname, you will be able to observe the applicants </h2>\n";
+		echo "<h2> Welcome $assname, you will be able to coordinate the applicants </h2>\n";
 	} else {
 		echo "<h2> Welcome $assname, you will be able to review the applicants </h2>\n";
 	}
@@ -105,7 +105,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 					echo "<input type='hidden' name='a' value='$a'>";
 					echo "<input type='hidden' name='h' value='$h'>";
 					echo "<input type='hidden' name='rh' value='$rh'>";
-					echo "<input type='submit' style='background-color:darkblue; color:white;' onclick=\"return confirm('Send reminder?')\" value='Reminder'>";
+					echo "<input type='submit' style='background-color:darkblue; color:white;' onclick=\"return confirm('Send email to referee?')\" value='Email Referee'>";
 					echo "</form>";
 					echo "</div><div style='clear:right'></div></li>";
 				} else {
@@ -222,6 +222,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		$jobtitle = get_jobtitle($p);
 		$jobdesc  = get_jobdesc($p);
 		$jobdue   = get_jobdue($p);
+		$jobrefearly = get_jobrefearly($p);
 
 		echo "<br>";
 		echo "<br>";
@@ -240,6 +241,18 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='submit' value='Update'>";
+		echo "<br>";
+		echo "<br>";
+		echo "<form style='display: inline;' action='assessor.php?a=$a' method='post' name='formupdaterefearly'>";
+		echo "Get referees letters early in the process: <select name='jobrefearly'>\n";
+		for ($i = 0; $i<=1; $i++)
+			echo "<option value='$i' ".(($i==$jobrefearly)?"selected":"").">".($i=="0"?"Off":"On"). "</option>\n";
+		echo "</select>\n";
+		echo "<input type='hidden' name='action' value='updaterefearly'>";
+		echo "<input type='hidden' name='p' value='$p'>";
+		echo "<input type='hidden' name='a' value='$a'>";
+		echo "<input type='submit' value='Update'>";
+		echo "</form>";
 		echo "</form>";
 	}
 
@@ -259,15 +272,14 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 } else if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $p = $_POST['p'];
         $a = $_POST['a'];
-	valid_p_a($p, $a) or die("Invalid URL");
+	valid_p($p) or die("Invalid Position URL");
+	valid_p_a($p, $a) or die("Invalid Admin URL");
 
 	$do_page = true;
 
         $action = $_POST['action'];
 	switch ($action) {
 		case "closeposition":
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: test if assessor is chairman
 			$fh = fopen(file_jobstatus($p), 'w+');
 			fwrite($fh, "close");
@@ -277,8 +289,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			break;
 
 		case "openposition":
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: test if assessor is chairman
 			$fh = fopen(file_jobstatus($p), 'w+') or die("can't open file");
 			fwrite($fh, "open");
@@ -289,8 +299,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "updatedescposition" :
 		        $jobdesc      = $_POST['jobdesc'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: test if assessor is chairman
 			$fh = fopen(file_jobdesc($p), 'w+') or die("can't open file for job description");
 			fwrite($fh, $jobdesc);
@@ -302,8 +310,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 		case "updatedueposition" :
 		        $jobdue      = $_POST['jobdue'];
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: test if assessor is chairman
 			$fh = fopen(file_jobdue($p), 'w+') or die("can't open file for job due date");
 			fwrite($fh, $jobdue);
@@ -312,6 +318,16 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			$msg="Position ". get_jobtitle($p). " due date updated";
 			$error="";
 			break;
+
+		case "updaterefearly" :
+		        $jobrefearly      = $_POST['jobrefearly'];
+			$fh = fopen(file_jobrefearly($p), 'w+') or die("can't open file for job ref early");
+			fwrite($fh, $jobrefearly);
+			fclose($fh);
+			$msg="Position ". get_jobtitle($p). " ref early referee updated";
+			$error="";
+			break;
+
 
 		case "app_qualifies":
 		        $h = $_POST['h'];
@@ -356,7 +372,38 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$error="Applicant is in shortlist";
 			}
 
-			get_results_page($p, $a, "assessor");
+			get_results_page($p, $a, "assessor", $msg, $error);
+
+			$do_page=false;
+			break;
+
+		case "app_massresponse" :
+			$msg="";
+			$applicants = get_applicants($p);
+			$applicants = explode( "\n", $applicants );
+			foreach ($applicants as $appemail) {
+				$h=do_hash($appemail);
+				if (!valid_p_h( $p, $h )) continue;
+
+				$appresponse  = get_appresponse($p, $h);
+				$appshortlist = get_appshortlist($p, $h);
+				if (($appresponse == "") &&  ($appshortlist == "")) {
+
+					$jobtitle = get_jobtitle($p);
+					$appname  = get_appname($p, $h );
+					$appemail = get_appemail($p, $h );
+			
+					mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
+
+					$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
+					fwrite($fh, $a);
+					fclose($fh);
+
+					$msg .= "<br>Response sent to Applicant $appname";
+				}
+			}
+
+			get_results_page($p, $a, "assessor", $msg, $error);
 
 			$do_page=false;
 			break;
@@ -382,13 +429,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$error="Applicant has already received a response";
 			}
 
-			get_results_page($p, $a, "assessor");
+			get_results_page($p, $a, "assessor", $msg, $error);
 
 			$do_page=false;
 			break;
 
 		case "app_removeshortlist" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 			valid_p_h($p, $h) or die("Invalid Applicant");
 
@@ -408,7 +454,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$error="Applicant has already received a response";
 			}
 
-			get_results_page($p, $a, "assessor");
+			get_results_page($p, $a, "assessor", $msg, $error);
 
 			$do_page=false;
 			break;
@@ -424,14 +470,14 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 		
 			mail_applicant_reminder($appname, $appemail, $jobtitle, $p, $h);
 
-			get_results_page($p, $a, "assessor");
+			$msg="Applicant reminded";
+
+			get_results_page($p, $a, "assessor", $msg, $error);
 
 			$do_page=false;
 			break;
 
 		case "add_assessor" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: check assessor is chairman
 
 		        $assname   = filter_var($_POST['assname'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW|FILTER_FLAG_ENCODE_AMP );
@@ -466,8 +512,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			break;
 			
 		case "del_assessor" :
-		        $p = $_POST['p'];
-			valid_p($p) or die("Invalid Admin Position URL");
 			# TODO: check assessor is chairman
 
 		        $assdel  = $_POST['assdel'];
@@ -494,12 +538,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			break;
 
 		case "sendrefmail" :
-		        $p = $_POST['p'];
 		        $h = $_POST['h'];
 		        $rh = $_POST['rh'];
-			valid_p_h_rh($p, $h, $rh) or die("Invalid URL");
+			valid_p_h_rh($p, $h, $rh) or die("Invalid Referee URL");
 
-			$msg="Reminder sent to referee";
+			$msg="Email sent to referee";
 			$error="";
 			sendrefmail($p, $h, $rh);
 

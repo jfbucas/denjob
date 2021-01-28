@@ -17,10 +17,10 @@ function get_page($p, $h, $msg = "", $error = "") {
 	echo "<h2>Welcome $appname, you will be able to manage your application below </h2>\n";
 
 	if ($msg != "") {
-		echo "<h1> <font color=green><i>$msg</i></font> </h1>";
+		echo "<h4> <font color=green><i>$msg</i></font> </h4>";
 	}
 	if ($error != "") {
-		echo "<h1> <font color=red><i>$error</i></font> </h1>";
+		echo "<h4> <font color=red><i>$error</i></font> </h4>";
 	}
 
 	echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
@@ -48,11 +48,15 @@ function get_page($p, $h, $msg = "", $error = "") {
 	$refcount = 0;
 	if ($jobrefnumber > 0) {
 		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
-		echo "<h3> Referees </h3>\n";
+		echo "<h3> $jobrefnumber Referee".($jobrefnumber>1?"s":"")." required for this position</h3>\n";
 		
+		$jobrefearly = get_jobrefearly($p);
 		echo "<h5> Add a referee </h5>\n";
-#		echo "An email will be sent automatically to the address provided.\n";
-		echo "Your nominated referees will be contacted at the appropriate stage of the assessment process by our HR section. You will be notified in advance of us contacting your referees.\n";
+		if ( $jobrefearly == "1" ) {
+			echo "An email will be sent automatically to the address provided.\n";
+		} else {
+			echo "<i>Your nominated referees will be contacted at the appropriate stage of the assessment process by our HR section.<br>You will be notified in advance of us contacting your referees.</i><br><br>\n";
+		}
 		echo "<form action='applicant.php?p=$p&h=$h' method='post' name='formaddref'>\n";
 		echo "Referee Name <input type='text' name='refname' maxlength='50' value=''><br>\n";
 		echo "Referee Email <input type='email' name='refemail' maxlength='50' value=''><br>\n";
@@ -64,7 +68,6 @@ function get_page($p, $h, $msg = "", $error = "") {
 
 		echo "<h5> List of current referees </h5>\n";
 
-		$jobrefearly = get_jobrefearly($p);
 		$referees = get_referees($p, $h);
 		$referees = explode( "\n", $referees );
 		$refname = "";
@@ -103,6 +106,30 @@ function get_page($p, $h, $msg = "", $error = "") {
 		}
 		echo "</ul>";
 		echo "</div>";
+	}
+
+	if (!file_exists(file_appmonitoring($p, $h))) {
+		echo "<br>";
+		echo "<div style='border: 1px solid lightgray; padding: 10px;'>";
+		echo "<h3> Recruitment Equality Monitoring Information (Optional) </h3>\n";
+		echo "<i>Candidates are requested to complete this information which is required for us to monitor implementation of our Gender, Diversity and Inclusion Strategy.<br>";
+		echo "Please note this data is solely for administrative records to enable us to measure achievement of Gender, Diversity & Inclusion objectives.<br>";
+		echo "It does not form part of the candidate's application and is not presented or considered at any stage of the selection process.</i><br>\n";
+		echo '<br>';
+		echo '<form action="applicant.php?p='.$p.'&h='.$h.'" method="post" name="formmonitoring">';
+		echo "Nationality ".select_nationality()."<br>\n";
+		echo '<br>';
+		echo "Gender ".select_gender()." ";
+		echo "if you selected Other, please specify: <input type='text' name='genderother' maxlength='50' value=''><br>\n";
+		echo '<br>';
+		echo '<input type="hidden" name="action" value="submit_monitoring">';
+		echo '<input type="hidden" name="p" value="' . $p . '">';
+		echo '<input type="hidden" name="h" value="' . $h . '">';
+		echo "<input type='submit' value='Submit'>";
+		echo '</form>';
+
+		echo "</div>";
+		echo "<br>";
 	}
 	
 	$finalizable="disabled";
@@ -248,6 +275,32 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$error="Referee $refemail not found";
 			}
 			break;
+
+
+		case "submit_monitoring":
+		        $nationality = clean($_POST['nationality']);
+		        $gender      = clean($_POST['gender']);
+		        $genderother = clean($_POST['genderother']);
+
+			# TODO validate nationality, gender
+
+			$fh = fopen(file_jobmonitoringnationality($p), 'a') or die("can't open file monitoring nationality");
+			fwrite($fh, $nationality . "\n");
+			fclose($fh);
+
+			$fh = fopen(file_jobmonitoringgender($p), 'a') or die("can't open file monitoring gender");
+			fwrite($fh, $gender. ($genderother!=""? " ". $genderother:"") . "\n");
+			fclose($fh);
+
+			$fh = fopen(file_appmonitoring($p, $h), 'w+') or die("Can't open monitoring file");
+			fwrite($fh, $h);
+			fclose($fh);
+
+			$msg="Thank you for sharing this information with us.";
+			$error="";
+
+			break;
+
 
 		case "finish" :
 

@@ -16,10 +16,21 @@ function get_page($p, $a, $msg = "", $error = "") {
 	echo "</head>";
 	echo "<body>";
 
-	if ($assstatus == "coordinator") {
-		echo "<h2> Welcome $assname, you will be able to coordinate the applicants </h2>\n";
-	} else {
-		echo "<h2> Welcome $assname, you will be able to review the applicants </h2>\n";
+	switch ($assstatus) {
+		case "chairman":
+			echo "<h2> Welcome Chairman $assname, you will be able to configure this position </h2>\n";
+			break;
+		case "coordinator":
+			echo "<h2> Welcome $assname, you will be able to coordinate the applicants </h2>\n";
+			break;
+		case "normal":
+			echo "<h2> Welcome $assname, you will be able to review the applicants </h2>\n";
+			break;
+		case "deleted":
+		case "expired":
+			echo "<h2> Dear $assname, your link has now expired </h2>\n";
+			die("");
+			break;
 	}
 
 	if ($msg != "") {
@@ -273,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         $p = $_POST['p'];
         $a = $_POST['a'];
 	valid_p($p) or die("Invalid Position URL");
-	valid_p_a($p, $a) or die("Invalid Admin URL");
+	valid_p_a($p, $a) or die("Invalid Assessor URL");
 
 	$do_page = true;
 

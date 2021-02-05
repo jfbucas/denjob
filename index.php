@@ -37,6 +37,7 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 		if ( $status ) {
 			$jobtitle = get_jobtitle($p);
 			$jobdesc  = get_jobdesc($p);
+			$jobdue   = get_jobdue($p);
 
 			if ($only_p != "") {
 #				echo "<br><br>\n";
@@ -52,7 +53,7 @@ function get_page($c, $only_p, $msg = "", $error = "") {
 				echo "<br><br>\n";
 				echo "</form>";
 			}
-			echo "<h3> <a href=index.php?p=".$p.">" . $jobtitle . "</a></h3>\n";
+			echo "<h3> <a href=index.php?p=".$p.">" . $jobtitle . " - close date is " . $jobdue . "</a></h3>\n";
 			echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
 		} else {
 			echo "<font color=gray>\n";

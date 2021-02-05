@@ -58,7 +58,7 @@ function get_page($c, $msg = "", $error = "") {
 		$jobdue   = get_jobdue($p);
 		$jobrefnumber = get_jobrefnumber($p);
 		$jobrefearly = get_jobrefearly($p);
-		echo "<h4 onclick='toggle(\"jobinfo$p\");'><a href='#job$p'>" . $jobtitle . " due on " . $jobdue . "</a></h4>\n";
+		echo "<h4 onclick='toggle(\"jobinfo$p\");'><a href='#job$p'>" . $jobtitle . " - close date is " . $jobdue . "</a></h4>\n";
 		echo "<div id='jobinfo$p' class='hide'>";
 
 		$status = get_jobcondition($p);
@@ -166,13 +166,29 @@ function get_page($c, $msg = "", $error = "") {
 
 			$assname   = get_assname($p, $a);
 			$assstatus = get_assstatus($p, $a);
-			echo "<li>  $assname ($assemail)  <font color='blue'>$assstatus</font> ";
+			/*echo "<li>  $assname ($assemail)  <font color='blue'>$assstatus</font> ";
 			echo "<form action='admin.php?c=$c#job$p' method='post' name='formdelass' style='display: inline;'>";
 			echo "<input type='hidden' name='action' value='del_assessor'>";
 			echo "<input type='hidden' name='p' value='$p'>";
 			echo "<input type='hidden' name='c' value='$c'>";
 			echo "<input type='hidden' name='a' value='$a'>";
 			echo "<input type='submit' value='Delete'>";
+			echo "</form>";
+			*/
+			echo "<li>";
+			echo "<form action='admin.php?c=$c#job$p' method='post' name='formupdateass'>\n";
+			echo "$assname ($assemail) <select name='assstatus'>\n";
+			echo "<option value='normal' ".($assstatus=="normal"?"selected":"").">Normal</option>\n";
+			echo "<option value='chairman' ".($assstatus=="chairman"?"selected":"").">Chairman</option>\n";
+			echo "<option value='coordinator' ".($assstatus=="coordinator"?"selected":"").">Coordinator</option>\n";
+			echo "<option value='expired' ".($assstatus=="expired"?"selected":"").">Expired</option>\n";
+			echo "<option value='deleted' ".($assstatus=="deleted"?"selected":"").">Deleted</option>\n";
+			echo "</select>\n";
+			echo "<input type='hidden' name='p' value='$p'>";
+			echo "<input type='hidden' name='c' value='$c'>";
+			echo "<input type='hidden' name='a' value='$a'>";
+			echo '<input type="hidden" name="action" value="update_assessor">';
+			echo "<input type='submit' value='Update'>";
 			echo "</form>";
 			echo "</li>";
 		}
@@ -548,6 +564,49 @@ if ( isset($argv) ){
 			}
 			break;
 
+		case "update_assessor" :
+		        $a  = $_POST['a'];
+			valid_p_a($p, $a) or die("Invalid URL");
+
+			$assemail = get_assemail($p, $a);
+				
+		        $assstatus  = $_POST['assstatus'];
+
+
+			switch ($assstatus) {
+				case "normal":
+				case "chairman":
+				case "coordinator":
+				case "expired":
+					set_assstatus($p, $a, $assstatus);
+					$msg="Assessor set as ".$assstatus;
+					$error="";
+					break;
+
+				case "deleted":
+					# del address from assessors
+					$assessors = explode( "\n", get_assessors($p) );
+					$key = array_search( $assemail, $assessors );
+					if ($key !== false) {
+						unset($assessors[$key]);
+						$assessors = implode( "\n", $assessors );
+						$fh = fopen(file_assessors($p), 'w+') or die("can't open file");
+						fwrite($fh, $assessors);
+						fclose($fh);
+
+						rrmdir(file_assdir($p, $a));
+
+
+						$msg="Assessor has been deleted";
+						$error="";
+					}else{
+						$msg="";
+						$error="Assessor $assemail not found";
+					}
+					break;
+			}
+			break;
+
 		case "results" :
 			get_results_page($p, $c, "admin" );
 			$do_page=false;
@@ -604,7 +663,7 @@ if ( isset($argv) ){
 					mail_applicant_response($appname, $appemail, $jobtitle, $p, $h);
 
 					$fh = fopen(file_appresponse($p, $h), 'w+') or die("Can't open response file");
-					fwrite($fh, $a);
+					fwrite($fh, $c);
 					fclose($fh);
 
 					$msg .= "<br>Response sent to Applicant $appname";
@@ -612,7 +671,7 @@ if ( isset($argv) ){
 				}
 			}
 
-			get_results_page($p, $a, "assessor", $msg, $error);
+			get_results_page($p, $c, "admin", $msg, $error);
 
 			$do_page=false;
 			break;

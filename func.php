@@ -471,7 +471,7 @@ function show_job_title_description($p) {
 	$jobtitle = get_jobtitle($p);
 	$jobdesc  = get_jobdesc($p);
 	$jobdue   = get_jobdue($p);
-	echo "<h3>" . $jobtitle . " - due on ". $jobdue . "</h3>\n";
+	echo "<h3>" . $jobtitle . " - close date is ". $jobdue . "</h3>\n";
 	echo "<div style='width:700px'><pre style='word-wrap: break-word;white-space: pre-wrap;' >" . $jobdesc . "</pre></div>\n";
 }
 

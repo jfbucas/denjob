@@ -252,6 +252,7 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='submit' value='Update'>";
+		echo "</form>";
 		echo "<br>";
 		echo "<br>";
 		echo "<form style='display: inline;' action='assessor.php?a=$a' method='post' name='formupdaterefearly'>";
@@ -263,7 +264,6 @@ function get_page($p, $a, $msg = "", $error = "") {
 		echo "<input type='hidden' name='p' value='$p'>";
 		echo "<input type='hidden' name='a' value='$a'>";
 		echo "<input type='submit' value='Update'>";
-		echo "</form>";
 		echo "</form>";
 	}
 
@@ -539,6 +539,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 				$fh = fopen(file_assessors($p), 'w+') or die("can't open file");
 				fwrite($fh, $assessors);
 				fclose($fh);
+
+				rrmdir(file_assdir($p, $assdel));
 
 				$msg="Assessor has been deleted";
 				$error="";

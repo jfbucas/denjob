@@ -555,7 +555,6 @@ if ( isset($argv) ){
 
 				rrmdir(file_assdir($p, $a));
 
-
 				$msg="Assessor has been deleted";
 				$error="";
 			}else{

@@ -12,6 +12,9 @@ $HASH_SALT = "#SomeString#";
 # The folder containing the data
 $CFG_POSITIONS_DIR = "positions";
 
+# The folder positions expire 6 months after the last interaction
+$CFG_POSITIONS_EXPIRE = "6";
+
 # The URL sent by email
 $URL="https://jobs.institut.ion";
 

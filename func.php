@@ -180,7 +180,7 @@ function get_jobcondition($p){
 	$status = get_jobstatus($p);
 	$due    = get_jobdue($p);
 	$date   = date('Y-m-d');
-	return (($status !== false)&&($due > $date));
+	return (($status !== false)&&($due >= $date));
 }
 function get_template_applicant($p){ 
 	global $APP_MAIN;
@@ -828,6 +828,51 @@ function rrmdir($src) {
 	closedir($dir);
 	rmdir($src);
 }
+
+// Recursively find the most recent file
+function getMostRecentFile($dir) {
+	$files = scandir($dir);
+	$maxDate = null;
+	$maxFile = null;
+	foreach ($files as $file) {
+		if ($file == '.' || $file == '..') {
+			continue;
+		}
+		$filePath = $dir . '/' . $file;
+		if (is_dir($filePath)) {
+			$subFile = getMostRecentFile($filePath);
+			if ($subFile !== null && ($maxDate === null || $subFile['date'] > $maxDate)) {
+				$maxDate = $subFile['date'];
+				$maxFile = $subFile['file'];
+			}
+		} else {
+			$fileTime = filemtime($filePath);
+			if ($maxDate === null || $fileTime > $maxDate) {
+				$maxDate = $fileTime;
+				$maxFile = $filePath;
+			}
+		}
+	}
+	return ($maxFile !== null && $maxDate !== null) ? array('file' => $maxFile, 'date' => $maxDate) : null;
+}
+
+
+function getMostRecentFileOfPosition($position, $expire_date) {
+
+	$mostRecentFile = getMostRecentFile(file_positionsdir().'/'.$position);
+	if ($mostRecentFile !== null && $mostRecentFile['date'] < $expire_date) {
+		//echo 'The most recent file is more than 6 months old: ' . $mostRecentFile['file'];
+		return True;
+	} else {
+		//echo 'The most recent file is not more than 6 months old.';
+		return False;
+	}
+}
+
+
+
+
+
 
 
 function select_gender() {

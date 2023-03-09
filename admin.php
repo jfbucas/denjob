@@ -5,6 +5,8 @@ $msg = "";
 $error = "";
 
 function get_page($c, $msg = "", $error = "") {
+	global $CFG_POSITIONS_EXPIRE;
+
 	get_js_toggle();	
 	echo "<script src='https://code.jquery.com/jquery-1.11.3.js'></script>";
 
@@ -58,6 +60,19 @@ function get_page($c, $msg = "", $error = "") {
 		$jobdue   = get_jobdue($p);
 		$jobrefnumber = get_jobrefnumber($p);
 		$jobrefearly = get_jobrefearly($p);
+
+		// Check if the position has expired
+		if (getMostRecentFileOfPosition($p, mktime(0, 0, 0, date('n')-$CFG_POSITIONS_EXPIRE, 1, date('y')))) {
+			echo "<font color=red> Delete this position </font> \n";
+			echo "<form style='display: inline;' action='admin.php?c=$c' method='post' name='formdeleteposition'>";
+			echo "<input type='hidden' name='action' value='deleteposition'>";
+			echo "<input type='hidden' name='p' value='$p'>";
+			echo "<input type='hidden' name='c' value='$c'>";
+			echo "<input type='submit' style='background-color:black; color:white;' onclick=\"return confirm('This will delete this position (all applicants, all reference letters, etc). Are you sure?')\" value='Delete'>";
+			echo "</form>";
+		}
+
+
 		echo "<h4 onclick='toggle(\"jobinfo$p\");'><a href='#job$p'>" . $jobtitle . " - close date is " . $jobdue . "</a></h4>\n";
 		echo "<div id='jobinfo$p' class='hide'>";
 
@@ -416,6 +431,12 @@ if ( isset($argv) ){
 			fclose($fh);
 			$msg="Position ". get_jobtitle($p). " due date updated";
 			$error="";
+			break;
+
+		case "deleteposition":
+			$msg="Position deleted";
+			$error="";
+			rrmdir(file_positionsdir()."/$p/");
 			break;
 
 		case "updaterefnumber" :

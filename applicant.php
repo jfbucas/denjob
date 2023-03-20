@@ -285,11 +285,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			# TODO validate nationality, gender
 
 			$fh = fopen(file_jobmonitoringnationality($p), 'a') or die("can't open file monitoring nationality");
-			fwrite($fh, $nationality . "\n");
+			fwrite($fh, get_appname($p, $h). "\t" .$nationality . "\n");
 			fclose($fh);
 
 			$fh = fopen(file_jobmonitoringgender($p), 'a') or die("can't open file monitoring gender");
-			fwrite($fh, $gender. ($genderother!=""? " ". $genderother:"") . "\n");
+			fwrite($fh, get_appname($p, $h). "\t" .$gender. ($genderother!=""? " ". $genderother:"") . "\n");
 			fclose($fh);
 
 			$fh = fopen(file_appmonitoring($p, $h), 'w+') or die("Can't open monitoring file");
